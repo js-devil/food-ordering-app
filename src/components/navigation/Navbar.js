@@ -7,13 +7,15 @@ import logo from "../../assets/img/logo.png";
 
 const Navbar = props => {
   const Naira = <span>&#8358;</span>;
-  const { choices, auth, savePath } = props;
+  const { auth, savePath } = props;
   const { username, image_url, balance } = auth;
   const location = props.location.pathname;
   const navMenu = (
     <Link to="#" data-target="mobile-demo" className="sidenav-trigger">
       <i className="material-icons">menu</i>
     </Link>
+
+
   );
 
   const signinBtn = (
@@ -22,6 +24,8 @@ const Navbar = props => {
       <i className="material-icons login">person</i>
     </Link>
   );
+
+  const locationName = location.replace("/", "")
 
   const authNav = Object.keys(auth).length ? navMenu : signinBtn;
 
@@ -33,29 +37,29 @@ const Navbar = props => {
 
   React.useEffect(() => {
     // console.log(location);
-    savePath(location)
+    savePath(location);
   }, [location, savePath]);
 
   return (
-    <div style={location.includes("sign") ? { display: "none" } : {}}>
-      <nav>
+    <div
+      style={
+        (location.includes("sign") ? { display: "none" } : {})
+      }
+    >
+      <nav className={location.includes("dashboard") ? "no-shadow" : ""}>
         <div className="nav-wrapper">
           <Link to="#" className="brand-logo">
-            {location.replace("/", "")}
+            {!locationName.includes("dashboard") ? locationName : ""}
           </Link>
 
           {location.includes("cart") ? cartNav : authNav}
 
-          {!location.includes("cart") && choices.length ? (
-            <Link to="/cart" className="cart">
-              <span className="picked_no">
-                {choices.length ? choices.length : ""}
-              </span>
-              <i className="material-icons">shopping_cart</i>
-            </Link>
-          ) : (
-            ""
-          )}
+          <Link to="#!" className="link-img">
+            <img
+              src="https://www.bootdey.com/img/Content/avatar/avatar7.png"
+              alt="profile"
+            />
+          </Link>
         </div>
       </nav>
 
@@ -81,7 +85,7 @@ const Navbar = props => {
         </li>
         <li className="active">
           {" "}
-          <Link to="/">
+          <Link to="/dashboard">
             {" "}
             <i className="material-icons">home</i> Home{" "}
           </Link>

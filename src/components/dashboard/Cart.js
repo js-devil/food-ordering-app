@@ -7,6 +7,8 @@ import { foodPicked } from "../../store/actions/choices";
 import Choice from "../functions/FoodChoice";
 import Toast from "../functions/Toast";
 import Confirm from "../functions/Confirm";
+const Endpoint = `http://localhost:5000`;
+
 
 class Cart extends Component {
   constructor(props) {
@@ -75,7 +77,7 @@ class Cart extends Component {
 
   async login(self, data) {
     try {
-      const res = await axios.post("http://localhost:5000/users/login", data);
+      const res = await axios.post(`${Endpoint}/users/login`, data);
       self.props.saveLoginData(res.data);
       Toast("success", "Login Successful");
       self.props.history.push("/");
@@ -89,7 +91,7 @@ class Cart extends Component {
 
   async postOrder(data) {
     try {
-      const res = await axios.post("http://localhost:5000/order", data);
+      const res = await axios.post(`${Endpoint}/order`, data);
       Toast("success", res.data.status);
       // this.props.history.push("/orders");
     } catch (err) {
@@ -136,12 +138,6 @@ class Cart extends Component {
 
               <tr>
                 <td colSpan="3">
-                  {/* <a
-                    className="waves-effect waves-light btn modal-trigger cancel"
-                    href="#cancel"
-                  >
-                    Cancel
-                  </a> */}
                   <button
                     onClick={() => this.cancelOrder()}
                     className="btn waves-effect waves-light modal-trigger cancel"

@@ -1,3 +1,100 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins&display=swap");
+html,
+body,
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: "Poppins", sans-serif !important;
+}
+
 .app {
-  margin-top: 15%;
+  margin-top: 14%;
+  padding: 15px;
+  margin-bottom: 15%;
+}
+
+.app-bottom {
+  position: fixed;
+  bottom: 0px;
+  background: #fff;
+  width: 100%;
+  padding: 30px;
+  height: 22px;
+}
+
+.app-bottom .home-icon {
+  position: relative;
+  top: -27px;
+  left: -10px;
+}
+
+.app-bottom .home-icon i.material-icons,
+.app-bottom .cart i.material-icons {
+  background: #443c87;
+  padding: 10px;
+  font-size: 36px;
+  color: #fff;
+  border-radius: 50%;
+}
+
+.app-bottom .home-icon p {
+  background: #443c87;
+  margin: 0;
+  padding: 5px 10px;
+  position: absolute;
+  width: 70px;
+  top: -23px;
+  width: 150%;
+  font-size: 22px;
+  color: #fff;
+  border-bottom-right-radius: 15px;
+  border-top-right-radius: 15px;
+  left: 44px;
+}
+
+.app-bottom .cart {
+  position: absolute;
+  right: 15px;
+  top: 3px;
+}
+
+.picked_no {
+  position: absolute;
+  right: 22px;
+  color: red;
+  font-size: 18px;
+  top: 8px;
+  z-index: 9;
+  font-weight: 600;
+}
+
+.recharge-page {
+  padding: 20px;
+  margin: 50% auto;
+  text-align: center;
+}
+
+.recharge-page h5 {
+  font-size: 145%;
+}
+
+.recharge-page input {
+  font-size: 24px !important;
+  width: 85% !important;
+  text-align: center;
+}
+
+.recharge-page button {
+  padding: 10px;
+  width: 50%;
+  background-color: #443c87;
+  border: 0;
+  border-radius: 8px;
+}
+
+.recharge-page button i {
+  font-size: 26px;
+  color: #f5f5f5;
 }

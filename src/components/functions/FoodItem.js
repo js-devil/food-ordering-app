@@ -8,16 +8,14 @@ const FoodItem = ({ food, pickFood, choices }) => {
     : "https://i0.wp.com/simshomekitchen.com/wp-content/uploads/2018/07/how-to-make-nigerian-beef-and-chicken-stew-1.jpg?resize=750%2C500&ssl=1";
 
   const check = (
-    <div className="checked">
+    <span className="checked">
       <i className="material-icons">check_circle</i>
-    </div>
+    </span>
   );
   const pickedRef = React.useRef();
   const [{ picked }, setPicked] = React.useState({
     picked: false
   });
-  const backgroundColor = food.status.includes("Un") ? "red" : "green";
-
   // React.useEffect(() => {
   //   let obj = choices.find(key => key.id === food.id);
   //   if (obj) {
@@ -30,6 +28,7 @@ const FoodItem = ({ food, pickFood, choices }) => {
     <div
       className="food-item"
       ref={pickedRef}
+      style={{ backgroundImage: "url(" + img + ")" }}
       onClick={() => {
         if (!food.status.includes("Un")) {
           pickFood(food);
@@ -40,27 +39,15 @@ const FoodItem = ({ food, pickFood, choices }) => {
         }
       }}
     >
-      <img src={img} alt={food.name} />
-
       <div className="food-content">
+        <span className="qty">2 x&nbsp;</span>
         <h5>{food.name}</h5>
-        <p>
-          <span>
-            {Naira}
-            {food.price}
-          </span>
-          <span className="qty"> {food.quantity}% </span>
-        </p>
 
-        <p className="cate-status">
-          <span> {food.category} </span>
-          <span className="status">
-            <i style={{ backgroundColor }}> &nbsp;&nbsp;&nbsp; </i> &nbsp;{" "}
-            {food.status}
-          </span>
+        <p>
+          {" "}
+          {Naira} {food.price}{" "}
         </p>
       </div>
-
       {picked ? check : ""}
     </div>
   );

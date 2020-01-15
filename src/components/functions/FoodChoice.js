@@ -15,8 +15,8 @@ const Choice = ({ no, food, loading, order, hasError }) => {
   return (
     <tr className="foodName">
       <td style={{ width: "10%", textAlign: "center" }}>{no}.</td>
-      <td style={{ width: "40%" }}>{name}</td>
-      <td style={{ width: "50%" }}>
+      <td style={{ width: "60%" }}>{name}</td>
+      <td style={{ width: "30%" }}>
         <input
           disabled={loading}
           onChange={e => {
@@ -27,6 +27,7 @@ const Choice = ({ no, food, loading, order, hasError }) => {
           }}
           type="number"
           value={cost}
+          maxLength="4"
           className="validate"
         />
         {error ? (

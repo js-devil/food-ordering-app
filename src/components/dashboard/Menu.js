@@ -1,36 +1,26 @@
 import React, { Component } from "react";
 
 import { connect } from "react-redux";
-import { getMenu } from "../../store/actions/menu";
 import { foodPicked } from "../../store/actions/choices";
+import { getMenu } from "../../store/actions/menu";
 
 import FoodItem from "../functions/FoodItem";
 import "../../assets/css/Menu.css";
 import sadface from "../../assets/img/sad-face.png";
 
 class Menu extends Component {
+  componentDidMount() {
+    this.props.getMenu(this);
+  }
+
   constructor(props) {
     super(props);
     this.state = {
       menu: [],
       category: "Category",
-      status: "Status",
       foodChoices: []
     };
   }
-
-  componentDidMount() {
-    this.props.getMenu(this);
-  }
-
-  changeStatus = status => {
-    this.setState({
-      menu: this.props.menu.filter(key =>
-        key.status.toLowerCase()===(status.toLowerCase())
-      ),
-      status
-    });
-  };
 
   changeCategory = category => {
     this.setState({
@@ -47,17 +37,23 @@ class Menu extends Component {
   pickFoodItem = item => {
     let findItem = this.state.foodChoices.filter(key => key.id === item.id);
     if (findItem.length) {
-      this.setState({
-        foodChoices: this.state.foodChoices.filter(key => key.id !== item.id)
-      }, () => {
-        this.props.foodPicked(this.state.foodChoices);
-      });
+      this.setState(
+        {
+          foodChoices: this.state.foodChoices.filter(key => key.id !== item.id)
+        },
+        () => {
+          this.props.foodPicked(this.state.foodChoices);
+        }
+      );
     } else {
-      this.setState({
-        foodChoices: [...this.state.foodChoices, item]
-      }, () => {
-        this.props.foodPicked(this.state.foodChoices);
-      });
+      this.setState(
+        {
+          foodChoices: [...this.state.foodChoices, item]
+        },
+        () => {
+          this.props.foodPicked(this.state.foodChoices);
+        }
+      );
     }
   };
 
@@ -73,8 +69,6 @@ class Menu extends Component {
       "Drinks",
       "Specials"
     ];
-    const statuses = ["Available", "Unavailable"];
-
     const loader = (
       <div className="loader">
         <div className="preloader-wrapper big active">
@@ -95,14 +89,19 @@ class Menu extends Component {
     );
 
     const menuList = this.state.menu.map(key => (
-      <FoodItem pickFood={this.pickFoodItem} key={key.id} food={key} choices={this.props.choices} />
+      <FoodItem
+        pickFood={this.pickFoodItem}
+        key={key.id}
+        food={key}
+        choices={this.props.choices}
+      />
     ));
 
     const noMenu = (
       <div className="none">
         <img src={sadface} alt="No food" />
         <p>
-          {this.state.category === "All" && this.state.status === "Available"
+          {this.state.category === "All"
             ? "Food is not ready yet!"
             : "Food under this category is finished or not ready"}
         </p>
@@ -112,32 +111,14 @@ class Menu extends Component {
 
     return (
       <div className="food-menu">
-        <div className="card-panel menu-card">
-          <p className="waves-effect waves-light modal-trigger" href="#status">
-            {this.state.status} {caret}
-          </p>
-
-          <p
+        <div className="category">
+          <div
             className="waves-effect waves-light modal-trigger"
             href="#category"
           >
-            {this.state.category ? this.state.category : "All"} {caret}
-          </p>
-        </div>
-
-        {/* <!-- Modal Structure --> */}
-        <div id="status" className="modal bottom-sheet modal-fixed-footer">
-          <div className="modal-content">
-            <h5>Status</h5>
-            {statuses.map(key => (
-              <div key={key} onClick={() => this.changeStatus(key)}>
-                {" "}
-                <p className="modal-close">{key}</p>{" "}
-              </div>
-            ))}
-          </div>
-          <div className="modal-footer">
-            <p className="modal-close btn-flat">Cancel</p>
+            <p>
+              {this.state.category ? this.state.category : "All"} {caret}
+            </p>
           </div>
         </div>
 
@@ -156,6 +137,7 @@ class Menu extends Component {
           </div>
         </div>
 
+        <h4>Based on what is available</h4>
         <div className="menu-list">
           {this.props.menuLoading
             ? loader
@@ -179,8 +161,7 @@ const mapStateToProps = state => {
 };
 
 const mapActionsToProps = {
-  getMenu,
-  foodPicked
+  foodPicked, getMenu
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Menu);

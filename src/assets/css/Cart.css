@@ -37,7 +37,7 @@ input.valid[type="number"]:not(.browser-default):focus {
   position: fixed;
   bottom: 0;
   width: 100%;
-  bottom: 0;
+  left: 0;
   text-align: center;
 }
 
