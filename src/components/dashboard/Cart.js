@@ -3,12 +3,11 @@ import axios from "axios";
 import "../../assets/css/Cart.css";
 import { connect } from "react-redux";
 import { foodPicked } from "../../store/actions/choices";
+import { getOrders } from "../../store/actions/orders";
 
 import Choice from "../functions/FoodChoice";
 import Toast from "../functions/Toast";
-import Confirm from "../functions/Confirm";
 const Endpoint = `http://localhost:5000`;
-
 
 class Cart extends Component {
   constructor(props) {
@@ -28,8 +27,8 @@ class Cart extends Component {
 
     this.setState({
       orders: this.props.choices.map(key => {
-        const { id, name, category } = key;
-        return { id, name, category, cost: key.price };
+        const { id, name, category, quantity } = key;
+        return { id, name, category, cost: key.price, user_quantity: 1 };
       }),
       total
     });
@@ -59,45 +58,51 @@ class Cart extends Component {
   };
 
   cancelOrder = async () => {
-    let a = Confirm("Are sure you want to cancel this order");
-    console.log(a)
-    // Confirm
+    this.props.history.goBack();
+    this.props.foodPicked([]);
+    this.setState({
+      orders: [],
+      total: 0
+    });
   };
 
   sendOrder = () => {
-    // console.log(this.props.auth);
     if (!this.state.error) {
-      if (!Object.keys(this.props.auth).length) {
-        Toast("info", "You have to login first");
-        return;
-      }
-      this.postOrder(this.state.orders);
+      this.setState({
+        loading: true
+      });
+      this.postOrder(this, {
+        order: this.state.orders,
+        total: this.state.total
+      });
     }
   };
 
-  async login(self, data) {
+  async postOrder(self, data) {
+    console.log(data);
     try {
-      const res = await axios.post(`${Endpoint}/users/login`, data);
-      self.props.saveLoginData(res.data);
-      Toast("success", "Login Successful");
+      const res = await axios({
+        method: "POST",
+        url: `${Endpoint}/order`,
+        headers: {
+          Authorization: `Bearer ${self.props.auth.token}`
+        },
+        data
+      });
+      Toast("success", res.data.status);
+      await self.props.getOrders(self.props.auth.token);
+
       self.props.history.push("/");
     } catch (err) {
       self.setState({
-        loading: false,
-        loadingText: "Login"
-      });
-    }
-  }
-
-  async postOrder(data) {
-    try {
-      const res = await axios.post(`${Endpoint}/order`, data);
-      Toast("success", res.data.status);
-      // this.props.history.push("/orders");
-    } catch (err) {
-      this.setState({
         loading: false
       });
+
+      if (err.response.status) {
+        Toast("error", String(err.response.data.error));
+        return;
+      }
+      Toast("error", "An error occured!");
     }
   }
 
@@ -138,12 +143,16 @@ class Cart extends Component {
 
               <tr>
                 <td colSpan="3">
-                  <button
-                    onClick={() => this.cancelOrder()}
-                    className="btn waves-effect waves-light modal-trigger cancel"
-                  >
-                    Cancel
-                  </button>
+                  {!this.state.loading ? (
+                    <button
+                      onClick={() => this.cancelOrder()}
+                      className="btn waves-effect waves-light modal-trigger cancel"
+                    >
+                      Cancel
+                    </button>
+                  ) : (
+                    ""
+                  )}
                 </td>
               </tr>
             </tfoot>
@@ -170,7 +179,8 @@ const mapStateToProps = state => {
 };
 
 const mapActionsToProps = {
-  foodPicked
+  foodPicked,
+  getOrders
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Cart);

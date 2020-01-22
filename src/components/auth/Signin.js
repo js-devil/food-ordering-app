@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 import { connect } from "react-redux";
 import { saveLoginData } from "../../store/actions/auth";
+import { getOrders } from "../../store/actions/orders";
 import Toast from "../functions/Toast";
 
 import { Link } from "react-router-dom";
@@ -64,16 +65,21 @@ class Signin extends Component {
   async login(self, data) {
     try {
       const res = await axios.post("http://localhost:5000/users/login", data);
-      self.props.saveLoginData(res.data);
-      Toast("success", 'Login Successful')
-      self.props.history.push("/");
+      await self.props.saveLoginData(res.data);
+      await self.props.getOrders(res.data.token);
+      Toast("success", "Login Successful");
+      await self.props.history.push("/dashboard");
     } catch (err) {
       self.setState({
         loading: false,
         loadingText: "Login"
       });
 
-      console.log(err);
+      if(err.response.status===400) {
+        Toast("error", String(err.response.data.error))
+        return
+      }
+      Toast("error", "An error occured!")
     }
   }
 
@@ -81,10 +87,11 @@ class Signin extends Component {
     return (
       <div className="signin-page">
         <div className="home">
-          <Link to="/">
+          <Link to="/signup">
             <i className="material-icons">home</i>
           </Link>
         </div>
+
         <div className="logo-container">
           <img src={logo} alt="McU Logo" />
         </div>
@@ -97,6 +104,7 @@ class Signin extends Component {
                 <input
                   id="username"
                   disabled={this.state.loading}
+                  style={{textTransform: 'lowercase'}}
                   onChange={this.handleInput}
                   type="text"
                   className="validate"
@@ -129,7 +137,11 @@ class Signin extends Component {
                   )}
                 </span>
                 <label htmlFor="password">Password</label>
-                <span className="helper-text pass-bg">
+                <span
+                  className={`helper-text ${
+                    this.state.errors.password ? "pass-bg" : ""
+                  }`}
+                >
                   {this.state.errors.password}
                 </span>
               </div>
@@ -156,7 +168,8 @@ const mapStateToProps = state => {
 };
 
 const mapActionsToProps = {
-  saveLoginData
+  saveLoginData,
+  getOrders
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Signin);

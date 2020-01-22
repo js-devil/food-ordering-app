@@ -68,3 +68,12 @@ input.valid[type="number"]:not(.browser-default):focus {
 .cancel:hover {
   background-color: #f4f6f6 !important;
 }
+
+.increment, .decrement {
+  position: absolute;
+  font-size: 24px;
+}
+
+.increment {
+  right: 10%
+}

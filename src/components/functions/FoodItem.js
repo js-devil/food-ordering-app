@@ -40,7 +40,7 @@ const FoodItem = ({ food, pickFood, choices }) => {
       }}
     >
       <div className="food-content">
-        <span className="qty">2 x&nbsp;</span>
+        <span className="qty">{food.quantity} x&nbsp;</span>
         <h5>{food.name}</h5>
 
         <p>

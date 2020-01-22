@@ -3,7 +3,7 @@ import { Link, withRouter } from "react-router-dom";
 
 const Footer = props => {
   const homeBtn = (
-    <Link className="home-icon" to="/">
+    <Link className="home-icon" to="/dashboard">
       <i className="material-icons">home</i>{" "}
       <p>
         <span>Home</span>
@@ -11,24 +11,31 @@ const Footer = props => {
     </Link>
   );
 
+  const { pathname } = props.location;
+
   return (
     <div
       className="app-bottom"
       style={
-        props.location.pathname.includes("sign") ||
-        props.location.pathname.includes("cart")
+        pathname.includes("sign") ||
+        pathname.includes("cart") ||
+        pathname === "/"
           ? { display: "none" }
           : {}
       }
     >
       {homeBtn}
 
-      <Link to="/cart" className="cart">
-        <span className="picked_no">
-          {props.choices.length ? props.choices.length : ""}
-        </span>
-        <i className="material-icons">shopping_cart</i>
-      </Link>
+      {props.choices.length ? (
+        <Link to="/cart" className="cart">
+          <span className="picked_no">{props.choices.length}</span>
+          <i className="material-icons">shopping_cart</i>
+        </Link>
+      ) : (
+        <Link to="#!" className="cart">
+          <i className="material-icons">shopping_cart</i>
+        </Link>
+      )}
     </div>
   );
 };

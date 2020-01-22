@@ -16,7 +16,7 @@ export const getMenu = self => {
       const menu = res.data.menu.length ? res.data.menu : [];
       dispatch(storeMenuData(menu));
 
-      if (Object.keys(self).length) {
+      if (self && Object.keys(self).length) {
         self.setState({
           menu
         });
