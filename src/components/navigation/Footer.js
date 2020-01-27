@@ -19,6 +19,7 @@ const Footer = props => {
       style={
         pathname.includes("sign") ||
         pathname.includes("cart") ||
+        pathname.includes("recharge") ||
         pathname === "/"
           ? { display: "none" }
           : {}

@@ -17,6 +17,7 @@ class Cart extends Component {
       loading: false,
       orders: [],
       total: 0,
+      foodChoices: [],
       error: false
     };
   }
@@ -27,9 +28,10 @@ class Cart extends Component {
 
     this.setState({
       orders: this.props.choices.map(key => {
-        const { id, name, category, quantity } = key;
+        const { id, name, category } = key;
         return { id, name, category, cost: key.price, user_quantity: 1 };
       }),
+      foodChoices: this.props.choices,
       total
     });
   }
@@ -57,6 +59,20 @@ class Cart extends Component {
     }
   };
 
+  removeFoodItem = (id) => {
+    console.log(id)
+    // if (this.state.foodChoices.length) {
+    //   this.setState(
+    //     {
+    //       foodChoices: this.state.foodChoices.filter(key => key.id !== id)
+    //     },
+    //     () => {
+    //       this.props.foodPicked(this.state.foodChoices);
+    //     }
+    //   );
+    // }
+  }
+
   cancelOrder = async () => {
     this.props.history.goBack();
     this.props.foodPicked([]);
@@ -79,7 +95,6 @@ class Cart extends Component {
   };
 
   async postOrder(self, data) {
-    console.log(data);
     try {
       const res = await axios({
         method: "POST",
@@ -108,6 +123,24 @@ class Cart extends Component {
 
   // methods
   render() {
+    const loader = (
+      <div className="loader">
+        <div className="preloader-wrapper big active">
+          <div className="spinner-layer spinner-blue-only">
+            <div className="circle-clipper left">
+              <div className="circle"></div>
+            </div>
+            <div className="gap-patch">
+              <div className="circle"></div>
+            </div>
+            <div className="circle-clipper right">
+              <div className="circle"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+
     return (
       <div className="cart-page">
         <div className="cart-container">
@@ -121,15 +154,15 @@ class Cart extends Component {
             </thead>
 
             <tbody>
-              {this.props.choices.map(key => {
+              {this.state.foodChoices.map(key => {
                 return (
                   <Choice
                     key={key.id}
                     food={key}
-                    no={this.props.choices.findIndex(x => x.id === key.id) + 1}
-                    loading={this.state.loading}
+                    no={this.state.foodChoices.findIndex(x => x.id === key.id) + 1}
                     order={this.getOrder}
                     hasError={this.checkErrors}
+                    removeItem={this.removeFoodItem}
                   />
                 );
               })}
@@ -164,6 +197,8 @@ class Cart extends Component {
             <i className="material-icons">near_me</i>
           </button>
         </div>
+
+        { this.state.loading ? loader : "" }
       </div>
     );
   }

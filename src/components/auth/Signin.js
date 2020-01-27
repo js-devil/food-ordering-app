@@ -88,7 +88,7 @@ class Signin extends Component {
       <div className="signin-page">
         <div className="home">
           <Link to="/signup">
-            <i className="material-icons">home</i>
+            <i className="material-icons">person_add</i>
           </Link>
         </div>
 
@@ -107,6 +107,7 @@ class Signin extends Component {
                   style={{textTransform: 'lowercase'}}
                   onChange={this.handleInput}
                   type="text"
+                  autoComplete="off"
                   className="validate"
                 />
                 <label htmlFor="username">Username</label>
@@ -119,6 +120,7 @@ class Signin extends Component {
                 <i className="material-icons prefix">lock</i>
                 <input
                   id="password"
+                  autoComplete="off"
                   type={this.state.viewPassword ? "text" : "password"}
                   onChange={this.handleInput}
                   className="validate"
@@ -137,11 +139,7 @@ class Signin extends Component {
                   )}
                 </span>
                 <label htmlFor="password">Password</label>
-                <span
-                  className={`helper-text ${
-                    this.state.errors.password ? "pass-bg" : ""
-                  }`}
-                >
+                <span className="helper-text">
                   {this.state.errors.password}
                 </span>
               </div>

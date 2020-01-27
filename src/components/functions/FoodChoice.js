@@ -1,6 +1,7 @@
 import React from "react";
+import Toast from "../functions/Toast";
 
-const Choice = ({ no, food, loading, order, hasError }) => {
+const Choice = ({ no, food, order, hasError }) => {
   const { id, name, category, price, quantity } = food;
   const [{ cost, error, user_quantity }, setCost] = React.useState({
     cost: food.price,
@@ -11,7 +12,22 @@ const Choice = ({ no, food, loading, order, hasError }) => {
   React.useEffect(() => {
     hasError(error);
     order({ id, name, category, cost, user_quantity });
-  }, [cost, error, hasError, order, id, name, category, price, user_quantity]);
+
+    if (error && user_quantity === quantity) {
+      Toast("info", `This is the maximum quantity of ${name} you can order`);
+    }
+  }, [
+    cost,
+    error,
+    hasError,
+    order,
+    id,
+    name,
+    category,
+    price,
+    user_quantity,
+    quantity
+  ]);
 
   return (
     <tr className="foodName">
@@ -30,14 +46,7 @@ const Choice = ({ no, food, loading, order, hasError }) => {
         >
           -
         </span>
-        <input
-          disabled={true}
-          style={{ textAlign: "center" }}
-          type="number"
-          value={cost}
-          maxLength="4"
-          className="validate"
-        />
+        <div className="food-cost">{cost}</div>
         <span
           onClick={e => {
             setCost(key => ({
@@ -51,16 +60,9 @@ const Choice = ({ no, food, loading, order, hasError }) => {
           +
         </span>
 
-        {
-          user_quantity == quantity  ? (
-          <span className="helper-text">
-            {`This is the maximum quantity you can order`}
-          </span>) 
-          : cost-price < price ? (
-          <span className="helper-text">
-            You can't buy below the minimum cost
-          </span>) : ""
-        }
+        {/* <span className="cancelItem">
+          <i className="material-icons"></i>
+        </span> */}
       </td>
     </tr>
   );

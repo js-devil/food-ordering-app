@@ -95,7 +95,7 @@ class App extends Component {
               auth={this.props.auth}
               component={Cart}
             />
-            
+
             <AuthRoute
               auth={this.props.auth}
               path="/recharge"

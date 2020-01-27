@@ -96,7 +96,7 @@ class Signin extends Component {
 
         <div className="home">
             <Link to="/">
-            <i className="material-icons">user</i>
+            <i className="material-icons">person</i>
             </Link>
         </div>
 
@@ -131,6 +131,7 @@ class Signin extends Component {
                   onChange={this.handleInput}
                   type="number"
                   maxLength="11"
+                  autoComplete="off"
                   className="validate"
                 />
                 <label htmlFor="username">Phone Number</label>
@@ -146,6 +147,7 @@ class Signin extends Component {
                   type={this.state.viewPassword ? "text" : "password"}
                   onChange={this.handleInput}
                   className="validate"
+                  autoComplete="off"
                 />
                 <span
                   className="view-pass"

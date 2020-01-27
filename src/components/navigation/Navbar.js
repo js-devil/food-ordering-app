@@ -63,7 +63,7 @@ const Navbar = props => {
           {location.includes("cart") ? cartNav : authNav}
 
         {
-          menuModal ?
+          !location.includes("recharge") ? (menuModal ?
           (<div
             className="waves-effect waves-light modal-trigger link-text"
             href="#category"
@@ -76,7 +76,7 @@ const Navbar = props => {
             href="#status"
           >
             <p> { status } {caret} </p>
-          </div>)
+          </div>)) : ""
         }
 
           <div id="status" className="modal bottom-sheet modal-fixed-footer">

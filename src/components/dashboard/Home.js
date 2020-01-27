@@ -79,7 +79,7 @@ class Home extends Component {
     ))) : (<div className="none">
             <img src={sadface} alt="No food" />
             <p>
-              {this.state.category === "All"
+              {this.props.category === "All"
                 ? "Food is not ready yet!"
                 : "Food under this category is finished or not ready"}
             </p>
