@@ -131,3 +131,23 @@
   height: 180px;
   margin-top: 10%;
 }
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px solid #00000059;
+  border-top: 0 !important;
+}
+
+.flex p {
+  font-size: 16px !important;
+  margin: 0;
+}
+
+.no-border {
+  border-bottom: 0;
+}
+
+.no-border:last-of-type {
+  border-bottom: 2px solid #00000059;
+}
