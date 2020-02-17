@@ -1,8 +1,8 @@
-import { STORE_ORDER_DATA } from "../actions/orders";
+import { STORE_ORDER_DATA, UPDATE_ORDERS } from "../actions/orders";
 
 const orders = (state = [], { type, data }) => {
   switch (type) {
-    case STORE_ORDER_DATA:
+    case STORE_ORDER_DATA || UPDATE_ORDERS:
       return data;
     default:
       return state;

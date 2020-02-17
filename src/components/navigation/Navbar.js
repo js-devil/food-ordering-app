@@ -63,7 +63,7 @@ const Navbar = props => {
           {location.includes("cart") ? cartNav : authNav}
 
         {
-          !location.includes("recharge") ? (menuModal ?
+          location.includes("dashboard") ? (menuModal ?
           (<div
             className="waves-effect waves-light modal-trigger link-text"
             href="#category"
@@ -140,18 +140,6 @@ const Navbar = props => {
           <Link to="/dashboard">
             {" "}
             <i className="material-icons">home</i> Home{" "}
-          </Link>
-        </li>
-        <li>
-          <Link to="/menu">
-            {" "}
-            <i className="material-icons">format_list_bulleted</i> Menu{" "}
-          </Link>
-        </li>
-        <li>
-          <Link to="/orders">
-            {" "}
-            <i className="material-icons">format_list_bulleted</i> My Orders{" "}
           </Link>
         </li>
         <li>

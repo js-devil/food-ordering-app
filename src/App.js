@@ -14,9 +14,25 @@ import Home from "./components/dashboard/Home";
 // import Menu from "./components/dashboard/Menu";
 import Cart from "./components/dashboard/Cart";
 import Recharge from "./components/dashboard/Recharge";
+import Settings from "./components/dashboard/Settings.js";
 
 import Navbar from "./components/navigation/Navbar";
 import Footer from "./components/navigation/Footer";
+import Toast from "./components/functions/Toast";
+
+const errors = ({ status, data }) => {
+  if (status === 400) {
+    if (data.error.includes("jwt expired")) {
+      Toast("info", "Session expired!");
+      this.props.logout({});
+      this.props.history.push("/");
+      return;
+    }
+    Toast("error", String(data.error));
+    return;
+  }
+  Toast("error", "An error occured!");
+};
 
 const AuthRoute = ({ component: Component, auth, ...rest }) => (
   <Route
@@ -37,12 +53,20 @@ class App extends Component {
     this.state = {
       category: "",
       status: "",
+      range: "",
       menuModal: true
     };
   }
   componentDidMount() {
     this.props.getMenu();
   }
+
+  getRange = range => {
+    console.log(range);
+    this.setState({
+      range
+    });
+  };
 
   getCategory = category => {
     this.setState({
@@ -85,7 +109,9 @@ class App extends Component {
             category={this.state.category}
             status={this.state.status}
             switch={this.switchModal}
+            dateRange={this.state.range}
             path="/dashboard"
+            catchErrors={errors}
             component={Home}
           />
           <div className="app">
@@ -94,16 +120,30 @@ class App extends Component {
               path="/cart"
               auth={this.props.auth}
               component={Cart}
+              catchErrors={errors}
             />
 
             <AuthRoute
               auth={this.props.auth}
               path="/recharge"
               component={Recharge}
+              catchErrors={errors}
+            />
+
+            <AuthRoute
+              auth={this.props.auth}
+              catchErrors={errors}
+              path="/settings"
+              component={Settings}
             />
           </div>
 
-          <Footer choices={this.props.choices} auth={this.props.auth} />
+          <Footer
+            choices={this.props.choices}
+            menuModal={this.state.menuModal}
+            changeRange={this.getRange}
+            auth={this.props.auth}
+          />
         </Router>
       </React.Fragment>
     );

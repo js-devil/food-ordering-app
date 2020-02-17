@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { foodPicked } from "../../store/actions/choices";
+import { getOrders } from "../../store/actions/orders";
 
 import FoodItem from "../functions/FoodList";
 import Order from "../functions/Order";
@@ -25,25 +26,48 @@ class Home extends Component {
 
   componentDidMount() {
     this.setState({
-      menu: this.props.menu,
+      menu: this.props.menu.filter(key => key.quantity !== 0),
       orders: this.props.orders
     });
+
+    if(Object.keys(this.props.auth).length && this.props.auth.token) {
+      setInterval(() => {
+        this.props.getOrders(this.props.auth.token, this);
+      }, 60000);
+    }
   }
 
   componentDidUpdate(prevProps) {
+    if(this.props.orders.length !== prevProps.orders.length) {
+      this.updateOrders(this.props.orders)
+    }
     if (
       this.props.category.toLowerCase() !== prevProps.category.toLowerCase()
     ) {
       this.setState({
         menu:
           this.props.category !== "All"
-            ? this.props.menu.filter(key =>
+            ? this.props.menu.filter(key => key.quantity !== 0)
+            .filter(key =>
                 key.category
                   .toLowerCase()
                   .includes(this.props.category.toLowerCase())
               )
-            : this.props.menu
+            : this.props.menu.filter(key => key.quantity !== 0),
+        // foodChoices: []
+      }, () => {
+        // this.props.foodPicked([]);
       });
+    }
+
+    if(
+      this.props.dateRange.toLowerCase() !== prevProps.dateRange.toLowerCase()
+    ) {
+      console.log(this.props.dateRange)
+      // this.setState({
+      //   orders: 
+      //   // this.props.category
+      // })
     }
 
     if (this.props.status.toLowerCase() !== prevProps.status.toLowerCase()) {
@@ -56,10 +80,19 @@ class Home extends Component {
         orders:
           this.props.status !== "Status"
             ? this.props.orders.filter(key => key.completed === status)
-            : this.props.orders
+            : this.props.orders,
+        // foodChoices: []
+      }, () => {
+        // this.props.foodPicked([]);
       });
     }
   }
+
+  updateOrders = orders => {
+    this.setState({
+      orders
+    });
+  };
 
   pickFoodItem = item => {
     let findItem = this.state.foodChoices.filter(key => key.id === item.id);
@@ -85,13 +118,10 @@ class Home extends Component {
   };
 
   getOrder = order => {
-    console.log(order)
-    this.setState(
-      {
-        order,
-        showModal: true
-      }
-    );
+    this.setState({
+      order,
+      showModal: Object.keys(order).length ? true : false
+    });
   };
 
   render() {
@@ -122,7 +152,7 @@ class Home extends Component {
         </thead>
         <tbody>
           {this.state.orders.map(key => (
-            <Order sendOrder={this.getOrder} order={key} key={key.id} />
+            <Order catchErrors={this.props.catchErrors} sendOrder={this.getOrder} order={key} key={key.id} />
           ))}
         </tbody>
       </table>
@@ -173,6 +203,9 @@ class Home extends Component {
             <OrderModal
               visible={this.state.showModal}
               order={this.state.order}
+              updateStateOrders={this.updateOrders}
+              sendOrder={this.getOrder}
+              catchErrors={this.props.catchErrors} 
             />
           ) : (
             ""
@@ -200,7 +233,8 @@ const mapStateToProps = state => {
 };
 
 const mapActionsToProps = {
-  foodPicked
+  foodPicked,
+  getOrders
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Home);

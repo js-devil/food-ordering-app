@@ -1,6 +1,8 @@
 import axios from "axios";
-
+import Toast from "../../components/functions/Toast";
+import { logout } from "./auth"
 export const STORE_ORDER_DATA = "orders:storeOrders";
+export const UPDATE_ORDERS = "orders:updateOrders";
 
 export const storeOrders = data => {
   return {
@@ -9,7 +11,14 @@ export const storeOrders = data => {
   };
 };
 
-export const getOrders = token => {
+export const updateOrders = data => {
+  return {
+    type: UPDATE_ORDERS,
+    data
+  };
+};
+
+export const getOrders = (token, self) => {
   return async dispatch => {
     try {
       const res = await axios({
@@ -29,11 +38,19 @@ export const getOrders = token => {
             .join(", ")
         };
       });
-
       dispatch(storeOrders(orders));
     } catch (err) {
-      console.log(err);
-      // this.checkErrors(err);
+      if (err.response.status === 400) {
+        if (err.response.data.error.includes("jwt expired")) {
+          Toast("info", "Session expired!");
+          logout({});
+          self.props.history.push("/");
+          return;
+        }
+        Toast("error", String(err.response.data.error));
+        return;
+      }
+      Toast("error", "An error occured!");
     }
   };
 };

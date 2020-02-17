@@ -105,19 +105,14 @@ class Cart extends Component {
         data
       });
       Toast("success", res.data.status);
-      await self.props.getOrders(self.props.auth.token);
+      await self.props.getOrders(self.props.auth.token, this);
 
-      self.props.history.push("/");
+      self.props.history.push("/dashboard");
     } catch (err) {
       self.setState({
         loading: false
       });
-
-      if (err.response.status) {
-        Toast("error", String(err.response.data.error));
-        return;
-      }
-      Toast("error", "An error occured!");
+      this.props.catchErrors(err.response)
     }
   }
 

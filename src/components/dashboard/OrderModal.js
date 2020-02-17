@@ -3,7 +3,8 @@ import M from "materialize-css";
 import "materialize-css/dist/css/materialize.min.css";
 
 import { connect } from "react-redux";
-import { getOrders } from "../../store/actions/orders";
+import { getOrders, updateOrders } from "../../store/actions/orders";
+import { saveLoginData } from "../../store/actions/auth";
 
 import axios from "axios";
 import Toast from "../functions/Toast";
@@ -26,7 +27,7 @@ class Modal extends Component {
 
     this.state = {
       loading: false,
-      showCancel: true,
+      showCancel: true
     };
   }
 
@@ -35,6 +36,7 @@ class Modal extends Component {
       M.Modal.init(this.Modal, options);
       let instance = M.Modal.getInstance(this.Modal);
       if (this.props.visible) instance.open();
+      else instance.close();
     }
   }
 
@@ -45,7 +47,41 @@ class Modal extends Component {
   }
 
   reOrder = async id => {
-    console.log(id);
+    let { balance, token } = this.props.auth;
+    this.setState({
+      loading: true
+    });
+
+    try {
+      const res = await axios({
+        method: "POST",
+        url: `http://localhost:5000/order/${id}/reorder`,
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        data: { balance }
+      });
+      let { status } = res.data;
+      balance = res.data.balance;
+      await this.props.saveLoginData({ ...this.props.auth, balance });
+      await this.props.sendOrder({});
+      await this.props.getOrders(token, this);
+      this.setState(
+        {
+          loading: false
+        },
+        () => {
+          Toast("success", status);
+        }
+      );
+    } catch (err) {
+      console.log(err);
+      this.setState({
+        loading: false
+      });
+
+      this.props.catchErrors(err.response);
+    }
   };
 
   cancelOrder = async id => {
@@ -63,23 +99,36 @@ class Modal extends Component {
       });
 
       if (res.status === 200) {
-        Toast("success", "This order has been cancelled");
-        await this.props.getOrders(res.data.token);
-        this.setState({
-          showCancel: false,
-          loading: false
-        })
+        let order = this.props.orders.find(key => key.id === id);
+        order.completed = 0;
+        let orders = [...this.props.orders.filter(key => key.id !== id), order];
+        await this.props.updateOrders(orders);
+        await this.props.updateStateOrders(orders);
+        await this.props.sendOrder(order);
+        const { balance, status } = res.data;
+        await this.props.saveLoginData({ ...this.props.auth, balance });
+        this.setState(
+          {
+            loading: false
+          },
+          () => {
+            Toast("success", status);
+          }
+        );
       }
     } catch (err) {
+      console.log(err);
       this.setState({
         loading: false
       });
 
-      if (err.response.status === 400) {
-        Toast("error", String(err.response.data.error));
-        return;
-      }
-      Toast("error", "An error occured!");
+      this.props.catchErrors(err.response);
+
+      // if (err.response.status === 400) {
+      //   Toast("error", String(err.response.data.error));
+      //   return;
+      // }
+      // Toast("error", "An error occured!");
     }
   };
 
@@ -107,7 +156,6 @@ class Modal extends Component {
             </div>
           </div>
         </div>
-        <p>Getting Menu...</p>
       </div>
     );
 
@@ -118,7 +166,7 @@ class Modal extends Component {
             this.Modal = Modal;
           }}
           id="modal1"
-          className="modal"
+          className={this.state.loading ? "modal blur  " : "modal"}
         >
           <div className="modal-content">
             <h5> Food Order </h5>
@@ -136,6 +184,8 @@ class Modal extends Component {
               </p>
             </div>
 
+            {this.state.loading ? loader : ""}
+
             <div className="flex">
               <p>Status:</p>
               <p>
@@ -152,7 +202,7 @@ class Modal extends Component {
             </div>
           </div>
           <div className="modal-footer">
-            {completed === null || this.state.showCancel===true ? (
+            {completed === null ? (
               <button
                 onClick={() => this.cancelOrder(id)}
                 className="waves-effect waves-red btn-flat"
@@ -176,13 +226,16 @@ class Modal extends Component {
 }
 
 const map = state => {
-  const { auth } = state;
+  const { orders, auth } = state;
   return {
-    auth
+    auth,
+    orders
   };
 };
 
 const actions = {
+  updateOrders,
+  saveLoginData,
   getOrders
 };
 

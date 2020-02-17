@@ -1,0 +1,20 @@
+.settings-page {
+}
+
+.settings {
+  padding: 15px 0;
+  font-size: 22px;
+  border-bottom: 2px solid #443c87;
+}
+
+.change-password {
+  padding: 15px 30px;
+  margin-top: 20%;
+}
+
+.pw-field input {
+    font-size: 26px;
+}
+.pw-field label {
+  font-size: 20px;
+}

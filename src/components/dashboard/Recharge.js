@@ -18,25 +18,27 @@ class Recharge extends Component {
 
   handleInput = ({ target }) => {
     this.setState({
-      [target.id]: target.value
+      error: [target.id].length !== 16 ? "Token must have 16 numbers" : "",
+      [target.id]: target.value.slice(0, -1)
     });
   };
 
   validateToken = () => {
-    if (this.state.token.length !== 16 || isNaN(this.state.token))
+    if (this.state.token.length !== 16 || isNaN(this.state.token)) {
       this.setState({
         error: "Token must have 16 numbers"
       });
-    else {
-      this.setState({
-        error: ""
-      });
-      const { token } = this.state;
-      this.setState({
-        loading: true
-      });
-      this.rechargeAccount(this, { token });
+      return;
     }
+    this.setState({
+      error: ""
+    });
+    const { token } = this.state;
+    this.setState({
+      loading: true
+    });
+    // this.rechargeAccount(this, { token });
+    console.log(token);
   };
 
   async rechargeAccount(self, data) {
@@ -51,22 +53,14 @@ class Recharge extends Component {
       });
 
       const { balance, status } = res.data;
-
-      const user_data = { ...self.props.auth, balance };
-      await self.props.saveLoginData(user_data);
-
+      await self.props.saveLoginData({ ...self.props.auth, balance });
       Toast("success", status);
-      self.props.history.push("/");
+      self.props.history.push("/dashboard");
     } catch (err) {
       self.setState({
         loading: false
       });
-
-      if (err.response.status === 400) {
-        Toast("error", String(err.response.data.error));
-        return;
-      }
-      Toast("error", "An error occured!");
+      this.props.catchErrors(err.response);
     }
   }
 
@@ -93,16 +87,20 @@ class Recharge extends Component {
       <div className="recharge-page">
         <h5>Your current balance is N{this.props.auth.balance}</h5>
 
+        {/* <div className="showToken">
+          <p>{this.state.token}</p>
+        </div> */}
         <input
           id="token"
           disabled={this.state.loading}
           onChange={this.handleInput}
           type="number"
           maxLength={16}
+          autoFocus={true}
           className="validate"
           placeholder="Enter token"
         />
-        <span className="helper-text">{this.state.error}</span>
+        <div className="helper-text">{this.state.error}</div>
 
         <div className="cart-footer">
           <button onClick={() => this.validateToken()}>

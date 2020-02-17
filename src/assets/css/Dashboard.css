@@ -62,7 +62,7 @@
 }
 
 .home-list {
-  margin-top: 70%;
+  margin-top: 60%;
 }
 
 .menu-heading {
@@ -151,3 +151,22 @@
 .no-border:last-of-type {
   border-bottom: 2px solid #00000059;
 }
+
+.blur {
+  opacity: 0.5
+}
+
+/* #token {
+  display: none;
+  position: relative;
+  top: -45px
+}
+
+.showToken {
+  font-size: 26px;
+  border-bottom: 2px solid #443c87;
+}
+
+.showToken p {
+  margin: 0;
+} */

@@ -73,7 +73,7 @@ class Signin extends Component {
     try {
       const res = await axios.post("http://localhost:5000/users/register", data);
       await self.props.saveLoginData(res.data);
-      await self.props.getOrders(res.data.token)
+      await self.props.getOrders(res.data.token, this)
       Toast("success", 'Registration Successful')
       await self.props.history.push("/dashboard");
     } catch (err) {
