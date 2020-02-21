@@ -30,9 +30,9 @@ class Home extends Component {
       orders: this.props.orders
     });
 
-    if(Object.keys(this.props.auth).length && this.props.auth.token) {
+    if(Object.values(this.props.auth).length && this.props.auth.token) {
       setInterval(() => {
-        this.props.getOrders(this.props.auth.token, this);
+        this.props.getOrders(this.props.auth.token, this, this.props.auth.username);
       }, 60000);
     }
   }

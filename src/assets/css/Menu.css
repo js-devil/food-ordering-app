@@ -1,30 +1,14 @@
-.food-menu {
+.admin-menu {
   background: #f5f5f5;
-  padding: 15px;
+  padding: 30px;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
-  margin-top: -10px;
+  position: fixed;
+  height: 100vh;
+  width: 100%;
 }
 
-.food-menu .category {
-  background: #fff;
-  text-align: center;
-  margin: 0 75px 20px;
-  font-size: 20px;
-  font-weight: 600;
-  border-radius: 35px;
-}
-
-.food-menu .category div {
-  margin: 0;
-  padding: 15px;
-}
-
-.food-menu .category p {
-  margin: 0;
-}
-
-.food-menu h4 {
+.admin-menu h4 {
   margin: 0;
   color: #000000b0;
   font-size: 20px;
@@ -49,10 +33,10 @@
   /* padding: 15px; */
 }
 
-.food-item {
-  height: 165px;
+.admin-link {
+  height: 195px;
   border-radius: 10px;
-  border: 2px solid #7681b0;
+  border: 2px solid rgb(68, 60, 133);
   margin: 20px 0px;
   background-size: 100% 100%;
   position: relative;
@@ -76,15 +60,16 @@
   font-weight: 400;
 }
 
-.food-content h5,
-.food-content p {
-  margin: 0;
-}
-
-.food-content p {
-  font-size: 24px;
-  float: right;
-  line-height: 1;
+.food-content button {
+  border: 2px solid #7681b0;
+  border: 0;
+  font-weight: 600;
+  padding: 15px;
+  font-size: 18px;
+  border-radius: 25px;
+  width: 50%;
+  background-color: rgb(68, 60, 133);
+  color: #f5f5f5;
 }
 
 .qty {

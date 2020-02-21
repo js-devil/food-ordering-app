@@ -1,5 +1,9 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+
+import M from "materialize-css";
+import "materialize-css/dist/css/materialize.min.css";
+
 import { connect } from "react-redux";
 import { logout } from "./store/actions/auth";
 import { getMenu } from "./store/actions/menu";
@@ -15,6 +19,9 @@ import Home from "./components/dashboard/Home";
 import Cart from "./components/dashboard/Cart";
 import Recharge from "./components/dashboard/Recharge";
 import Settings from "./components/dashboard/Settings.js";
+
+// Admin
+import Admin from "./components/admin/Home"
 
 import Navbar from "./components/navigation/Navbar";
 import Footer from "./components/navigation/Footer";
@@ -54,15 +61,21 @@ class App extends Component {
       category: "",
       status: "",
       range: "",
-      menuModal: true
+      menuModal: true,
     };
   }
   componentDidMount() {
     this.props.getMenu();
+    var elems = document.querySelectorAll('.sidenav');
+    M.Sidenav.init(elems);
+  }
+
+  componentDidUpdate() {
+    var elems = document.querySelectorAll('.sidenav');
+    M.Sidenav.init(elems);
   }
 
   getRange = range => {
-    console.log(range);
     this.setState({
       range
     });
@@ -114,6 +127,15 @@ class App extends Component {
             catchErrors={errors}
             component={Home}
           />
+
+          {/* Admin */}
+          <AuthRoute
+            auth={this.props.auth}
+            catchErrors={errors}
+            path="/admin"
+            component={Admin}
+          />
+          {/* style={ this.props.location.pathname.includes('settings') ? { marginBottom: 0 } : {}} */}
           <div className="app">
             {/* <Route path="/menu" component={Menu} /> */}
             <AuthRoute
@@ -136,6 +158,8 @@ class App extends Component {
               path="/settings"
               component={Settings}
             />
+
+            {/* Admin Routes */}
           </div>
 
           <Footer

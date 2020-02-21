@@ -65,7 +65,7 @@ class Modal extends Component {
       balance = res.data.balance;
       await this.props.saveLoginData({ ...this.props.auth, balance });
       await this.props.sendOrder({});
-      await this.props.getOrders(token, this);
+      await this.props.getOrders(token, this, this.props.auth.username);
       this.setState(
         {
           loading: false

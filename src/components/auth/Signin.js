@@ -66,8 +66,12 @@ class Signin extends Component {
     try {
       const res = await axios.post("http://localhost:5000/users/login", data);
       await self.props.saveLoginData(res.data);
-      await self.props.getOrders(res.data.token, this);
+      await self.props.getOrders(res.data.token, this, data.username);
       Toast("success", "Login Successful");
+      if(data.username.includes('admin') || data.username.includes('canteen') ) {
+        await self.props.history.push("/admin");
+        return
+      }
       await self.props.history.push("/dashboard");
     } catch (err) {
       self.setState({

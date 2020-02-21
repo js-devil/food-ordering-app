@@ -1,6 +1,6 @@
 import axios from "axios";
 import Toast from "../../components/functions/Toast";
-import { logout } from "./auth"
+import { logout } from "./auth";
 export const STORE_ORDER_DATA = "orders:storeOrders";
 export const UPDATE_ORDERS = "orders:updateOrders";
 
@@ -18,12 +18,13 @@ export const updateOrders = data => {
   };
 };
 
-export const getOrders = (token, self) => {
+export const getOrders = (token, self, name) => {
+  let url = name.includes("admin") || name.includes("canteen") ? "/all" : "";
   return async dispatch => {
     try {
       const res = await axios({
         method: "GET",
-        url: "http://localhost:5000/orders",
+        url: `http://localhost:5000/orders${url}`,
         headers: {
           Authorization: `Bearer ${token}`
         }

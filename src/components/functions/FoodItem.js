@@ -26,7 +26,7 @@ const FoodItem = ({ food, pickFood, choices }) => {
 
   return (
     <div
-      className="food-item"
+      className="admin-link"
       ref={pickedRef}
       style={{ backgroundImage: "url(" + img + ")" }}
       onClick={() => {

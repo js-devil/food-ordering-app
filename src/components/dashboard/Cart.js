@@ -105,7 +105,7 @@ class Cart extends Component {
         data
       });
       Toast("success", res.data.status);
-      await self.props.getOrders(self.props.auth.token, this);
+      await self.props.getOrders(self.props.auth.token, this, self.props.auth.username);
 
       self.props.history.push("/dashboard");
     } catch (err) {

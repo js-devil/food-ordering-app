@@ -7,7 +7,13 @@ import logo from "../../assets/img/logo.png";
 
 const Navbar = props => {
   const Naira = <span>&#8358;</span>;
-  const { auth, savePath, getCategory, menuModal, getStatus } = props;
+  const {
+    auth,
+    savePath,
+    getCategory,
+    menuModal,
+    getStatus
+  } = props;
   const { username, image_url, balance } = auth;
   const location = props.location.pathname;
   const navMenu = (
@@ -16,9 +22,14 @@ const Navbar = props => {
     </Link>
   );
 
-  const locationName = location.replace("/", "")
-
-  const authNav = Object.keys(auth).length ? navMenu : "";
+  const locationName = location.replace("/", "");
+  const links = ["Home", "Recharge", "Settings"];
+  const authNav =
+    Object.keys(auth).length &&
+    !auth.username.includes("admin") &&
+    !auth.username.includes("canteen")
+      ? navMenu
+      : "";
 
   const cartNav = (
     <span onClick={() => props.history.goBack()}>
@@ -27,31 +38,40 @@ const Navbar = props => {
   );
 
   const caret = <i className="material-icons caret">arrow_drop_down</i>;
-    const categories = [
-      "All",
-      "Rice",
-      "Yam",
-      "Beans",
-      "Swallow",
-      "Others",
-      "Drinks",
-      "Specials"
-    ];
+  const categories = [
+    "All",
+    "Rice",
+    "Yam",
+    "Beans",
+    "Swallow",
+    "Others",
+    "Drinks",
+    "Specials"
+  ];
 
-  const statuses = ["Pending", "Cancelled", "Completed"]
-
-  const [{ category, status }, setFilter] = React.useState({ category: 'All', status: 'Status' })
+  const statuses = ["Pending", "Cancelled", "Completed"];
+  const [{ category, status }, setFilter] = React.useState({
+    category: "All",
+    status: "Status"
+  });
 
   React.useEffect(() => {
     getCategory(category);
-    getStatus(status)
+    getStatus(status);
     savePath(location);
-  }, [location, savePath, category, getCategory, status, getStatus]);
+  }, [
+    location,
+    savePath,
+    category,
+    getCategory,
+    status,
+    getStatus,
+  ]);
 
   return (
     <div
       style={
-        (location.includes("sign") || location==="/" ? { display: "none" } : {})
+        location.includes("sign") || location === "/" ? { display: "none" } : {}
       }
     >
       <nav className={location.includes("dashboard") ? "no-shadow" : ""}>
@@ -62,30 +82,51 @@ const Navbar = props => {
 
           {location.includes("cart") ? cartNav : authNav}
 
-        {
-          location.includes("dashboard") ? (menuModal ?
-          (<div
-            className="waves-effect waves-light modal-trigger link-text"
-            href="#category"
-          >
-            <p> { category } {caret} </p>
-          </div>)
-          :
-          (<div
-            className="waves-effect waves-light modal-trigger link-text"
-            href="#status"
-          >
-            <p> { status } {caret} </p>
-          </div>)) : ""
-        }
+          {location.includes("dashboard") ? (
+            menuModal ? (
+              <div
+                className="waves-effect waves-light modal-trigger link-text"
+                href="#category"
+              >
+                <p>
+                  {" "}
+                  {category} {caret}{" "}
+                </p>
+              </div>
+            ) : (
+              <div
+                className="waves-effect waves-light modal-trigger link-text"
+                href="#status"
+              >
+                <p>
+                  {" "}
+                  {status} {caret}{" "}
+                </p>
+              </div>
+            )
+          ) : (
+            <Link
+              to="#"
+              style={{float: 'right'}}
+              onClick={() => {
+                props.logoutUser({});
+                props.history.push("/");
+              }}
+            >
+              <i className="material-icons">power_settings_new</i>
+            </Link>
+          )}
 
           <div id="status" className="modal bottom-sheet modal-fixed-footer">
             <div className="modal-content">
               <h5>Status</h5>
               {statuses.map(key => (
-                <div key={key} onClick={() => {
-                  setFilter(i => ({ ...i, status: key }))
-                }}>
+                <div
+                  key={key}
+                  onClick={() => {
+                    setFilter(i => ({ ...i, status: key }));
+                  }}
+                >
                   {" "}
                   <p className="modal-close">{key}</p>{" "}
                 </div>
@@ -100,9 +141,12 @@ const Navbar = props => {
             <div className="modal-content">
               <h5>Category</h5>
               {categories.map(key => (
-                <div key={key} onClick={() => {
-                  setFilter(i => ({ ...i, category: key }))
-                }}>
+                <div
+                  key={key}
+                  onClick={() => {
+                    setFilter(i => ({ ...i, category: key }));
+                  }}
+                >
                   {" "}
                   <p className="modal-close">{key}</p>{" "}
                 </div>
@@ -135,25 +179,32 @@ const Navbar = props => {
             {balance}
           </p>
         </li>
-        <li className="active">
-          {" "}
-          <Link to="/dashboard">
-            {" "}
-            <i className="material-icons">home</i> Home{" "}
-          </Link>
-        </li>
-        <li>
-          <Link to="/recharge">
-            {" "}
-            <i className="material-icons">attach_money</i> Recharge{" "}
-          </Link>
-        </li>
-        <li>
-          <Link to="/settings">
-            {" "}
-            <i className="material-icons">settings</i> Settings{" "}
-          </Link>
-        </li>
+        {links.map(key => (
+          <li
+            key={key}
+            className={
+              key.toLowerCase().includes(locationName) ||
+              (key.toLowerCase() === "home" && "dashboard" === locationName)
+                ? "active"
+                : ""
+            }
+          >
+            <Link
+              to={
+                key.toLowerCase() === "home"
+                  ? "/dashboard"
+                  : "/" + key.toLowerCase()
+              }
+            >
+              <i className="material-icons">
+                {key.toLowerCase() === "recharge"
+                  ? "attach_money"
+                  : key.toLowerCase()}
+              </i>{" "}
+              {key}
+            </Link>
+          </li>
+        ))}
         <li>
           <Link
             to="#"

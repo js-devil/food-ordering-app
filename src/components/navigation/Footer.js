@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
 
-const Footer = ({ menuModal, choices, location, changeRange }) => {
+const Footer = ({ menuModal, choices, location, changeRange, auth }) => {
   const { pathname } = location;
 
   // hooks
@@ -9,11 +9,15 @@ const Footer = ({ menuModal, choices, location, changeRange }) => {
   React.useEffect(() => {
     changeRange(range);
   }, [range, changeRange]);
+  const admin =
+    auth.username &&
+    (auth.username.includes("admin") || auth.username.includes("canteen"));
+
   const homeBtn = (
     <Link
       className="home-icon"
       style={{ display: pathname.includes("dashboard") ? "none" : "" }}
-      to="/dashboard"
+      to={admin ? "/admin" : "/dashboard"}
     >
       <i className="material-icons">home</i>{" "}
       <p>
@@ -53,7 +57,7 @@ const Footer = ({ menuModal, choices, location, changeRange }) => {
         pathname.includes("sign") ||
         pathname.includes("cart") ||
         pathname.includes("recharge") ||
-        pathname.includes("settings") ||
+        pathname.includes("admin") ||
         pathname === "/"
           ? { display: "none" }
           : {}
@@ -62,7 +66,14 @@ const Footer = ({ menuModal, choices, location, changeRange }) => {
       {homeBtn}
       {dateRange}
 
-      {choices.length || menuModal ? (
+      {
+        pathname.includes("settings") ||
+        pathname.includes("tokens") ||
+        pathname.includes("orders") ||
+        pathname.includes("menu") ||
+        pathname.includes("admin")
+        ? "" :
+        choices.length || menuModal ? (
         <Link to="/cart" className="cart">
           {choices.length ? (
             <span className="picked_no">{choices.length}</span>

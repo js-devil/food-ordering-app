@@ -20,10 +20,6 @@ const ChangePassword = props => {
     changeState
   ] = React.useState(state);
 
-  React.useEffect(() => {
-    console.log(old_password, new_password, confirm, loading);
-  }, [old_password, new_password, confirm, loading]);
-
   const handleInput = ({ target }) => {
     changeState(key => ({
       ...key,
@@ -47,7 +43,6 @@ const ChangePassword = props => {
         return
     }
     else if(new_password !== confirm) {
-        Toast("error", "Passwords do not match!")
         return;
     }
     else if(old_password.length>=6 && new_password.length>=6 && new_password === confirm) {
@@ -63,7 +58,7 @@ const ChangePassword = props => {
     try {
       const res = await axios({
         method: "POST",
-        url: `${Endpoint}/user/change-password`,
+        url: `${Endpoint}/users/change-password`,
         headers: {
           Authorization: `Bearer ${auth.token}`
         },
@@ -72,7 +67,12 @@ const ChangePassword = props => {
       Toast("success", res.data.status);
       changeState(key => ({
         ...key, ...state }))
+      document.getElementById("form").reset();
     } catch (err) {
+      changeState(key => ({
+        ...key,
+        loading: false
+      }));
       catchErrors(err.response);
     }
   };
@@ -97,13 +97,13 @@ const ChangePassword = props => {
 
   return (
     <div className="change-password">
-      <form className="col s12" onSubmit={e => handleSubmit(e)}>
+      <form className="col s12" id="form" onSubmit={e => handleSubmit(e)}>
         <div className="row">
           <div className="input-field pw-field col s12">
             <input
               id="old_password"
               disabled={loading}
-              style={{ textTransform: "lowercase" }}
+              style={{ textTransform: "lowercase", fontSize: '30px' }}
               onChange={e => handleInput(e)}
               type="password"
               autoComplete="off"
@@ -119,6 +119,7 @@ const ChangePassword = props => {
             <input
               id="new_password"
               disabled={loading}
+              style={{ textTransform: "lowercase", fontSize: '30px' }}
               autoComplete="off"
               type="password"
               onChange={e => handleInput(e)}
@@ -131,6 +132,7 @@ const ChangePassword = props => {
           <div className="input-field pw-field col s12">
             <input
               id="confirm"
+              style={{ textTransform: "lowercase", fontSize: '30px' }}
               autoComplete="off"
               disabled={loading}
               type="password"
