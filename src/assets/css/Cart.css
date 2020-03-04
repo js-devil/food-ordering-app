@@ -33,7 +33,7 @@
 .cart-footer button {
   padding: 20px;
   width: inherit;
-  background-color: #443c87;
+  background-color: rgb(68, 60, 133);
   /* background: #7681b0; */
   border: 0;
 }
@@ -101,6 +101,6 @@
 }
 
 input[type="number"]:not(.browser-default):focus:not([readonly]) {
-  border-bottom: 2px solid #443c87;
+  border-bottom: 2px solid rgb(68, 60, 133);
   box-shadow: none;
 }

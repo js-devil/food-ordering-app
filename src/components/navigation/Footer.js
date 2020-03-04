@@ -1,9 +1,9 @@
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
 
-const Footer = ({ menuModal, choices, location, changeRange, auth }) => {
+const Footer = ({ menuModal, choices, location, changeRange, auth, filter }) => {
   const { pathname } = location;
-
+  const { category, status } = filter
   // hooks
   const [{ range }, setRange] = React.useState({ range: "Today" });
   React.useEffect(() => {
@@ -67,11 +67,22 @@ const Footer = ({ menuModal, choices, location, changeRange, auth }) => {
       {dateRange}
 
       {
-        pathname.includes("settings") ||
-        pathname.includes("tokens") ||
-        pathname.includes("orders") ||
-        pathname.includes("menu") ||
-        pathname.includes("admin")
+        pathname.includes("menu") ? (
+          <div
+            className="waves-effect waves-light modal-trigger filter-text"
+            href="#category"
+          >
+            <p>{category} {caret}</p>
+          </div>
+        ) : pathname.includes("orders") ? (
+          <div
+            className="waves-effect waves-light modal-trigger filter-text"
+            href="#status"
+          >
+            <p>{status} {caret}</p>
+          </div>
+        ) :
+        pathname.includes("settings")
         ? "" :
         choices.length || menuModal ? (
         <Link to="/cart" className="cart">
@@ -82,7 +93,7 @@ const Footer = ({ menuModal, choices, location, changeRange, auth }) => {
           )}
           <i className="material-icons">shopping_cart</i>
         </Link>
-      ) : (
+        ) : (
         <div
           className="waves-effect waves-light modal-trigger range-text"
           href="#range"

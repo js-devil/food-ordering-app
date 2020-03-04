@@ -73,6 +73,11 @@ const ChangePassword = props => {
         ...key,
         loading: false
       }));
+
+      if(!err.response) {
+        Toast("error", "Network error!");
+        return
+      }
       catchErrors(err.response);
     }
   };

@@ -30,42 +30,50 @@ class Home extends Component {
       orders: this.props.orders
     });
 
-    if(Object.values(this.props.auth).length && this.props.auth.token) {
+    if (Object.values(this.props.auth).length && this.props.auth.token) {
       setInterval(() => {
-        this.props.getOrders(this.props.auth.token, this, this.props.auth.username);
+        this.props.getOrders(
+          this.props.auth.token,
+          this,
+          this.props.auth.username
+        );
       }, 60000);
     }
   }
 
   componentDidUpdate(prevProps) {
-    if(this.props.orders.length !== prevProps.orders.length) {
-      this.updateOrders(this.props.orders)
+    if (this.props.orders.length !== prevProps.orders.length) {
+      this.updateOrders(this.props.orders);
     }
     if (
       this.props.category.toLowerCase() !== prevProps.category.toLowerCase()
     ) {
-      this.setState({
-        menu:
-          this.props.category !== "All"
-            ? this.props.menu.filter(key => key.quantity !== 0)
-            .filter(key =>
-                key.category
-                  .toLowerCase()
-                  .includes(this.props.category.toLowerCase())
-              )
-            : this.props.menu.filter(key => key.quantity !== 0),
-        // foodChoices: []
-      }, () => {
-        // this.props.foodPicked([]);
-      });
+      this.setState(
+        {
+          menu:
+            this.props.category !== "All"
+              ? this.props.menu
+                  .filter(key => key.quantity !== 0)
+                  .filter(key =>
+                    key.category
+                      .toLowerCase()
+                      .includes(this.props.category.toLowerCase())
+                  )
+              : this.props.menu.filter(key => key.quantity !== 0)
+          // foodChoices: []
+        },
+        () => {
+          // this.props.foodPicked([]);
+        }
+      );
     }
 
-    if(
+    if (
       this.props.dateRange.toLowerCase() !== prevProps.dateRange.toLowerCase()
     ) {
-      console.log(this.props.dateRange)
+      console.log(this.props.dateRange);
       // this.setState({
-      //   orders: 
+      //   orders:
       //   // this.props.category
       // })
     }
@@ -80,10 +88,7 @@ class Home extends Component {
         orders:
           this.props.status !== "Status"
             ? this.props.orders.filter(key => key.completed === status)
-            : this.props.orders,
-        // foodChoices: []
-      }, () => {
-        // this.props.foodPicked([]);
+            : this.props.orders
       });
     }
   }
@@ -152,7 +157,12 @@ class Home extends Component {
         </thead>
         <tbody>
           {this.state.orders.map(key => (
-            <Order catchErrors={this.props.catchErrors} sendOrder={this.getOrder} order={key} key={key.id} />
+            <Order
+              catchErrors={this.props.catchErrors}
+              sendOrder={this.getOrder}
+              order={key}
+              key={key.id}
+            />
           ))}
         </tbody>
       </table>
@@ -205,7 +215,7 @@ class Home extends Component {
               order={this.state.order}
               updateStateOrders={this.updateOrders}
               sendOrder={this.getOrder}
-              catchErrors={this.props.catchErrors} 
+              catchErrors={this.props.catchErrors}
             />
           ) : (
             ""

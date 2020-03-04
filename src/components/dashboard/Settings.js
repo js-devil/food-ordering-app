@@ -6,7 +6,7 @@ import { saveLoginData } from "../../store/actions/auth";
 
 import ChangePassword from "../functions/ChangePassword";
 import ChangeAvatar from "../functions/ChangeAvatar";
-import Faq from "./faq";
+import Faq from "../../assets/js/faq";
 
 class Settings extends Component {
   componentDidMount() {

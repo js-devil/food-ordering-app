@@ -34,7 +34,7 @@ textarea {
 
 .app-bottom .home-icon i.material-icons,
 .app-bottom .cart i.material-icons {
-  background: #443c87;
+  background: rgb(68, 60, 133);
   padding: 10px;
   font-size: 36px;
   color: #fff;
@@ -42,7 +42,7 @@ textarea {
 }
 
 .app-bottom .home-icon p {
-  background: #443c87;
+  background: rgb(68, 60, 133);
   margin: 0;
   padding: 5px 10px;
   position: absolute;
@@ -93,7 +93,7 @@ textarea {
 .recharge-page button {
   padding: 10px;
   width: 50%;
-  background-color: #443c87;
+  background-color: rgb(68, 60, 133);
   border: 0;
   border-radius: 8px;
 }
@@ -115,7 +115,7 @@ textarea {
 
 .range-text p,
 .range-text p i {
-  color: #443c87;
+  color: rgb(68, 60, 133);
   font-size: 18px;
   margin: 0;
 }

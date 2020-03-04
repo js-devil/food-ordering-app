@@ -1,8 +1,20 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import "../../assets/css/Menu.css"
+import { getOrders } from "../../store/actions/orders";
+import "../../assets/css/Menu.css";
 
 class Home extends Component {
+  componentDidMount() {
+    if (Object.values(this.props.auth).length && this.props.auth.token) {
+      setInterval(() => {
+        this.props.getOrders(
+          this.props.auth.token,
+          this,
+          this.props.auth.username
+        );
+      }, 30000);
+    }
+  }
   render() {
     const links = [
       {
@@ -16,13 +28,14 @@ class Home extends Component {
       },
       {
         name: "Tokens",
-        img: "https://previews.123rf.com/images/sheilaf2002/sheilaf20021902/sheilaf2002190200645/116310825-plate-with-fork-upside-down-indicating-finished-with-meal-mug-beside-bill-receipt-on-plate-with-sugg.jpg"
+        img:
+          "https://previews.123rf.com/images/sheilaf2002/sheilaf20021902/sheilaf2002190200645/116310825-plate-with-fork-upside-down-indicating-finished-with-meal-mug-beside-bill-receipt-on-plate-with-sugg.jpg"
       }
     ];
 
     return (
       <div className="admin-menu">
-        <h4>Based on what is available</h4>
+        <h4>Based on today</h4>
         <div className="menu-list">
           {links.map(({ name, img }) => (
             <div
@@ -51,4 +64,8 @@ const map = state => {
     auth
   };
 };
-export default connect(map)(Home);
+
+const actions = {
+  getOrders
+};
+export default connect(map, actions)(Home);

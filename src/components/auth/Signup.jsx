@@ -82,6 +82,11 @@ class Signin extends Component {
         loadingText: "Sign Up"
       });
 
+      if(!err.response) {
+        Toast("error", "Network error!");
+        return
+      }
+
       if(err.response.status===400) {
         Toast("error", String(err.response.data.error))
         return

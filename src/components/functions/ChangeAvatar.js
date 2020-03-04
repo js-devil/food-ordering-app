@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import Toast from "./Toast";
-import avatars from "../../assets/avatars.json";
+import avatars from "../../assets/js/avatars.json";
 
 const ChangeAvatar = props => {
   const Endpoint = `http://localhost:5000`;
@@ -41,6 +41,11 @@ const ChangeAvatar = props => {
         ...key,
         loading: false
       }));
+      if(!err.response) {
+        Toast("error", "Network error!");
+        return
+      }
+
       catchErrors(err.response);
     }
   };

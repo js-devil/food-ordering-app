@@ -60,6 +60,11 @@ class Recharge extends Component {
       self.setState({
         loading: false
       });
+
+      if(!err.response) {
+        Toast("error", "Network error!");
+        return
+      }
       this.props.catchErrors(err.response);
     }
   }

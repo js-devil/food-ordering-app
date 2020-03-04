@@ -23,7 +23,7 @@ const Order = ({ order, sendOrder }) => {
   const pending = (
     <i
       className="material-icons"
-      style={{ fontSize: "20px", color: "#443c87" }}
+      style={{ fontSize: "20px", color: "rgb(68, 60, 133)" }}
     >
       remove
     </i>

@@ -24,11 +24,18 @@ const Navbar = props => {
 
   const locationName = location.replace("/", "");
   const links = ["Home", "Recharge", "Settings"];
+  const addNew = (
+    <span onClick={() => props.history.goBack()}>
+      <i className="material-icons">chevron_left</i>
+    </span>
+  );
+
   const authNav =
     Object.keys(auth).length &&
     !auth.username.includes("admin") &&
     !auth.username.includes("canteen")
-      ? navMenu
+      ? navMenu 
+      : location.includes('menu') || location.includes('orders') ? addNew
       : "";
 
   const cartNav = (
@@ -36,6 +43,8 @@ const Navbar = props => {
       <i className="material-icons">chevron_left</i>
     </span>
   );
+
+  const status_ = locationName.includes('order') ? true : false
 
   const caret = <i className="material-icons caret">arrow_drop_down</i>;
   const categories = [
@@ -52,7 +61,7 @@ const Navbar = props => {
   const statuses = ["Pending", "Cancelled", "Completed"];
   const [{ category, status }, setFilter] = React.useState({
     category: "All",
-    status: "Status"
+    status: status_ ? "Pending" : "Status"
   });
 
   React.useEffect(() => {
@@ -82,7 +91,8 @@ const Navbar = props => {
 
           {location.includes("cart") ? cartNav : authNav}
 
-          {location.includes("dashboard") ? (
+          {
+            location.includes("dashboard") ? (
             menuModal ? (
               <div
                 className="waves-effect waves-light modal-trigger link-text"
@@ -104,10 +114,13 @@ const Navbar = props => {
                 </p>
               </div>
             )
-          ) : (
+          ) :
+          (username && (username.includes('admin') || username.includes('canteen')))
+          ?
+           (
             <Link
               to="#"
-              style={{float: 'right'}}
+              style={{float: 'right', paddingRight: '10px'}}
               onClick={() => {
                 props.logoutUser({});
                 props.history.push("/");
@@ -115,6 +128,9 @@ const Navbar = props => {
             >
               <i className="material-icons">power_settings_new</i>
             </Link>
+          ) :
+          (
+            <img src={image_url} className="small-img" alt="user img" />
           )}
 
           <div id="status" className="modal bottom-sheet modal-fixed-footer">

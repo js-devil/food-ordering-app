@@ -22,13 +22,14 @@ import Settings from "./components/dashboard/Settings.js";
 
 // Admin
 import Admin from "./components/admin/Home"
+import Orders from "./components/admin/Orders"
 
 import Navbar from "./components/navigation/Navbar";
 import Footer from "./components/navigation/Footer";
 import Toast from "./components/functions/Toast";
 
 const errors = ({ status, data }) => {
-  if (status === 400) {
+  if (status && status === 400) {
     if (data.error.includes("jwt expired")) {
       Toast("info", "Session expired!");
       this.props.logout({});
@@ -38,7 +39,7 @@ const errors = ({ status, data }) => {
     Toast("error", String(data.error));
     return;
   }
-  Toast("error", "An error occured!");
+  Toast("error", "Network error!");
 };
 
 const AuthRoute = ({ component: Component, auth, ...rest }) => (
@@ -53,6 +54,20 @@ const AuthRoute = ({ component: Component, auth, ...rest }) => (
     }
   />
 );
+
+const AdminRoute = ({ component: Component, auth, ...rest }) => (
+  <Route
+    {...rest}
+    render={props =>
+      Object.keys(auth).length && (auth.username.includes('canteen') || auth.username.includes('admin')) ? (
+        <Component {...props} {...rest} />
+      ) : (
+        <Redirect to="/" />
+      )
+    }
+  />
+);
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -68,6 +83,12 @@ class App extends Component {
     this.props.getMenu();
     var elems = document.querySelectorAll('.sidenav');
     M.Sidenav.init(elems);
+
+    if(Object.values(this.props.auth).length && this.props.auth.token) {
+      setInterval(() => {
+        this.props.getOrders(this.props.auth.token, this, this.props.auth.username);
+      }, 60000);
+    }
   }
 
   componentDidUpdate() {
@@ -129,13 +150,23 @@ class App extends Component {
           />
 
           {/* Admin */}
-          <AuthRoute
+          <AdminRoute
             auth={this.props.auth}
             catchErrors={errors}
             path="/admin"
             component={Admin}
           />
-          {/* style={ this.props.location.pathname.includes('settings') ? { marginBottom: 0 } : {}} */}
+          {/* Admin Routes */}
+
+          <AdminRoute
+            auth={this.props.auth}
+            catchErrors={errors}
+            path="/orders"
+            category={this.state.category}
+            status={this.state.status}
+            component={Orders}
+          />
+
           <div className="app">
             {/* <Route path="/menu" component={Menu} /> */}
             <AuthRoute
@@ -158,8 +189,6 @@ class App extends Component {
               path="/settings"
               component={Settings}
             />
-
-            {/* Admin Routes */}
           </div>
 
           <Footer
@@ -167,6 +196,7 @@ class App extends Component {
             menuModal={this.state.menuModal}
             changeRange={this.getRange}
             auth={this.props.auth}
+            filter={ {category: this.state.category, status: this.state.status} }
           />
         </Router>
       </React.Fragment>

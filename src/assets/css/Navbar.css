@@ -1,5 +1,5 @@
 nav {
-  background-color: #443c87 !important;
+  background-color: rgb(68, 60, 133) !important;
   position: fixed;
   border-radius: 10px;
   z-index: 9;
@@ -42,11 +42,11 @@ ul:not(.browser-default) > li:last-of-type {
 
 .sidenav li > a {
   font-size: 20px;
-  color: #443c87;
+  color: rgb(68, 60, 133);
 }
 
 .sidenav li.active {
-  background: #443c87 !important;
+  background: rgb(68, 60, 133) !important;
 }
 
 .sidenav li.active > a > i,
@@ -56,11 +56,11 @@ ul:not(.browser-default) > li:last-of-type {
 
 .sidenav li > a > i {
   font-size: 26px;
-  color: #443c87 !important;
+  color: rgb(68, 60, 133) !important;
 }
 
 .logo {
-  background: #443c87;
+  background: rgb(68, 60, 133);
   height: 60px;
   display: flex;
   justify-content: space-evenly;
@@ -77,14 +77,14 @@ ul:not(.browser-default) > li:last-of-type {
 
 .profile {
   text-align: center;
-  color: #443c87 !important;
+  color: rgb(68, 60, 133) !important;
   margin: 10%;
   border-bottom: 0 !important;
 }
 
 .profile img {
   height: 200px;
-  border: 2px solid #443c87;
+  border: 2px solid rgb(68, 60, 133);
   border-radius: 50%;
   margin: 0;
 }
@@ -158,4 +158,12 @@ ul:not(.browser-default) > li:last-of-type {
 .modal-footer p {
   font-size: 16px;
   color: red;
+}
+
+.small-img {
+  height: 50px;
+  float: right;
+  margin-right: 10px;
+  border: 2px solid;
+  border-radius: 50%;
 }

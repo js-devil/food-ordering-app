@@ -68,9 +68,12 @@ class Signin extends Component {
       await self.props.saveLoginData(res.data);
       await self.props.getOrders(res.data.token, this, data.username);
       Toast("success", "Login Successful");
-      if(data.username.includes('admin') || data.username.includes('canteen') ) {
+      if (
+        data.username.includes("admin") ||
+        data.username.includes("canteen")
+      ) {
         await self.props.history.push("/admin");
-        return
+        return;
       }
       await self.props.history.push("/dashboard");
     } catch (err) {
@@ -79,11 +82,16 @@ class Signin extends Component {
         loadingText: "Login"
       });
 
-      if(err.response.status===400) {
-        Toast("error", String(err.response.data.error))
+      if(!err.response) {
+        Toast("error", "Network error!");
         return
       }
-      Toast("error", "An error occured!")
+
+      if (err.response && err.response.status === 400) {
+        Toast("error", String(err.response.data.error));
+        return;
+      }
+      Toast("error", "An error occured!");
     }
   }
 
@@ -108,7 +116,7 @@ class Signin extends Component {
                 <input
                   id="username"
                   disabled={this.state.loading}
-                  style={{textTransform: 'lowercase'}}
+                  style={{ textTransform: "lowercase" }}
                   onChange={this.handleInput}
                   type="text"
                   autoComplete="off"

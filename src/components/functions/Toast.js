@@ -5,7 +5,7 @@ iziToast.settings({
   timeout: 3000,
   titleSize: "18px",
   transitionIn: "flipInX",
-  progressBarColor: "#443c87",
+  progressBarColor: "rgb(68, 60, 133)",
   position: "topRight",
   transitionOut: "flipOutX"
 });

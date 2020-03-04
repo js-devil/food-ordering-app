@@ -41,6 +41,11 @@ export const getOrders = (token, self, name) => {
       });
       dispatch(storeOrders(orders));
     } catch (err) {
+      if (!err.response) {
+        Toast("error", "Network error!");
+        return;
+      }
+
       if (err.response.status === 400) {
         if (err.response.data.error.includes("jwt expired")) {
           Toast("info", "Session expired!");

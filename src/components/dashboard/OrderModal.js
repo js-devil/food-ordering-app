@@ -33,21 +33,28 @@ class Modal extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.order.id !== prevProps.order.id) {
-      M.Modal.init(this.Modal, options);
-      let instance = M.Modal.getInstance(this.Modal);
-      if (this.props.visible) instance.open();
-      else instance.close();
+      this.openModal();
     }
   }
 
   componentDidMount() {
-    M.Modal.init(this.Modal, options);
-    let instance = M.Modal.getInstance(this.Modal);
-    if (this.props.visible) instance.open();
+    this.openModal();
   }
 
+  openModal = () => {
+    M.Modal.init(this.Modal, options);
+    let instance = M.Modal.getInstance(this.Modal);
+    instance.open();
+  };
+
+  closeModal = () => {
+    M.Modal.init(this.Modal, options);
+    let instance = M.Modal.getInstance(this.Modal);
+    instance.close();
+  };
+
   reOrder = async id => {
-    let { balance, token } = this.props.auth;
+    let { balance, token, username } = this.props.auth;
     this.setState({
       loading: true
     });
@@ -64,8 +71,9 @@ class Modal extends Component {
       let { status } = res.data;
       balance = res.data.balance;
       await this.props.saveLoginData({ ...this.props.auth, balance });
-      await this.props.sendOrder({});
-      await this.props.getOrders(token, this, this.props.auth.username);
+      // await this.props.sendOrder({});
+      this.closeModal();
+      await this.props.getOrders(token, this, username);
       this.setState(
         {
           loading: false
@@ -75,11 +83,14 @@ class Modal extends Component {
         }
       );
     } catch (err) {
-      console.log(err);
       this.setState({
         loading: false
       });
 
+      if (!err.response) {
+        Toast("error", "Network error!");
+        return;
+      }
       this.props.catchErrors(err.response);
     }
   };
@@ -117,18 +128,60 @@ class Modal extends Component {
         );
       }
     } catch (err) {
-      console.log(err);
       this.setState({
         loading: false
       });
+      if (!err.response) {
+        Toast("error", "Network error!");
+        return;
+      }
 
       this.props.catchErrors(err.response);
+    }
+  };
 
-      // if (err.response.status === 400) {
-      //   Toast("error", String(err.response.data.error));
-      //   return;
-      // }
-      // Toast("error", "An error occured!");
+  completeOrder = async id => {
+    this.setState({
+      loading: true
+    });
+    try {
+      const res = await axios({
+        method: "POST",
+        url: `http://localhost:5000/order/${id}/answer`,
+        headers: {
+          Authorization: `Bearer ${this.props.auth.token}`
+        },
+        data: {}
+      });
+
+      if (res.status === 200) {
+        let order = this.props.orders.find(key => key.id === id);
+        order.completed = 1;
+        let orders = [...this.props.orders.filter(key => key.id !== id), order];
+        await this.props.updateOrders(orders);
+        await this.props.updateStateOrders(orders);
+        this.closeModal();
+
+        const { status } = res.data;
+        this.setState(
+          {
+            loading: false
+          },
+          () => {
+            Toast("success", status);
+          }
+        );
+      }
+    } catch (err) {
+      this.setState({
+        loading: false
+      });
+      if (!err.response) {
+        Toast("error", "Network error!");
+        return;
+      }
+
+      this.props.catchErrors(err.response);
     }
   };
 
@@ -140,6 +193,8 @@ class Modal extends Component {
       completed,
       time_of_order
     } = this.props.order;
+
+    const { username } = this.props.auth;
 
     const loader = (
       <div className="loader">
@@ -158,6 +213,27 @@ class Modal extends Component {
         </div>
       </div>
     );
+
+    const reorderBtn = (
+      <button
+        onClick={() => this.reOrder(id)}
+        className="waves-effect waves-green btn-flat"
+      >
+        Re-order
+      </button>
+    );
+
+    const cancelBtn =
+      completed === null ? (
+        <button
+          onClick={() => this.cancelOrder(id)}
+          className="waves-effect waves-red btn-flat"
+        >
+          Cancel
+        </button>
+      ) : (
+        ""
+      );
 
     return (
       <>
@@ -201,24 +277,24 @@ class Modal extends Component {
               <p>{time_of_order}</p>
             </div>
           </div>
-          <div className="modal-footer">
-            {completed === null ? (
+          {username.includes("admin") || username.includes("canteen") ? (
+            <div className="modal-footer">
               <button
-                onClick={() => this.cancelOrder(id)}
-                className="waves-effect waves-red btn-flat"
+                onClick={() => this.completeOrder(id)}
+                className="waves-effect waves-green btn-flat"
               >
-                Cancel
+                Complete
               </button>
-            ) : (
-              ""
-            )}
-            <button
-              onClick={() => this.reOrder(id)}
-              className="waves-effect waves-green btn-flat"
-            >
-              Re-order
-            </button>
-          </div>
+            </div>
+          ) : (!username.includes("admin") || !username.includes("canteen")) &&
+            completed === null ? (
+            <div className="modal-footer">
+              {cancelBtn}
+              {reorderBtn}
+            </div>
+          ) : (
+            <div className="modal-footer">{reorderBtn}</div>
+          )}
         </div>
       </>
     );
