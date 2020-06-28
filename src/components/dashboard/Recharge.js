@@ -12,30 +12,30 @@ class Recharge extends Component {
     this.state = {
       loading: false,
       token: "",
-      error: ""
+      error: "",
     };
   }
 
   handleInput = ({ target }) => {
     this.setState({
       error: [target.id].length !== 16 ? "Token must have 16 numbers" : "",
-      [target.id]: target.value.slice(0, -1)
+      [target.id]: target.value.slice(0, -1),
     });
   };
 
   validateToken = () => {
     if (this.state.token.length !== 16 || isNaN(this.state.token)) {
       this.setState({
-        error: "Token must have 16 numbers"
+        error: "Token must have 16 numbers",
       });
       return;
     }
     this.setState({
-      error: ""
+      error: "",
     });
     const { token } = this.state;
     this.setState({
-      loading: true
+      loading: true,
     });
     // this.rechargeAccount(this, { token });
     console.log(token);
@@ -47,9 +47,9 @@ class Recharge extends Component {
         method: "POST",
         url: `${Endpoint}/tokens/load`,
         headers: {
-          Authorization: `Bearer ${self.props.auth.token}`
+          Authorization: `Bearer ${self.props.auth.token}`,
         },
-        data
+        data,
       });
 
       const { balance, status } = res.data;
@@ -58,12 +58,12 @@ class Recharge extends Component {
       self.props.history.push("/dashboard");
     } catch (err) {
       self.setState({
-        loading: false
+        loading: false,
       });
 
-      if(!err.response) {
+      if (!err.response) {
         Toast("error", "Network error!");
-        return
+        return;
       }
       this.props.catchErrors(err.response);
     }
@@ -119,16 +119,16 @@ class Recharge extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   // return state
   const { auth } = state;
   return {
-    auth
+    auth,
   };
 };
 
 const mapActionsToProps = {
-  saveLoginData
+  saveLoginData,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Recharge);

@@ -73,7 +73,7 @@ class Signin extends Component {
   async register(self, data) {
     try {
       const res = await axios.post(
-        "http://localhost:5000/users/register",
+        `http://localhost:5000/users/register`,
         data
       );
       await self.props.saveLoginData(res.data);

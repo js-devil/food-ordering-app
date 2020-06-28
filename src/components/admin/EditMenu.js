@@ -3,8 +3,7 @@ import M from "materialize-css";
 import "materialize-css/dist/css/materialize.min.css";
 
 import { connect } from "react-redux";
-import {} from "../../store/actions/menu";
-// import { saveLoginData } from "../../store/actions/auth";
+import { storeMenuData } from "../../store/actions/menu";
 
 import EditItem from "../functions/admin/EditItem";
 
@@ -29,7 +28,8 @@ class Modal extends Component {
 
     this.state = {
       loading: false,
-      showEdit: false,
+      showEdit: Object.values(this.props.item).length ? false : true,
+      showDelete: false,
     };
   }
 
@@ -48,6 +48,145 @@ class Modal extends Component {
     let instance = M.Modal.getInstance(this.Modal);
     instance.close();
     this.props.closeModal(false);
+  };
+
+  addItem = async (data) => {
+    try {
+      const res = await axios({
+        method: "POST",
+        url: `http://localhost:5000/menu`,
+        headers: {
+          Authorization: `Bearer ${this.props.auth.token}`,
+        },
+        data,
+      });
+
+      if (res.status === 200) {
+        const { status, item } = res.data;
+
+        const menu = [...this.props.menu, item];
+        await this.props.storeMenuData(menu);
+        this.props.updateMenu(menu);
+
+        this.setState(
+          {
+            loading: false,
+          },
+          () => {
+            Toast("success", status);
+            this.closeModal();
+          }
+        );
+      }
+    } catch (err) {
+      this.setState({
+        loading: false,
+      });
+      if (!err.response) {
+        Toast("error", "Network error!");
+        return;
+      }
+
+      this.props.catchErrors(err.response);
+    }
+  };
+
+  submitPayload = async (data, id) => {
+    this.setState({
+      loading: true,
+    });
+
+    if (!id) return this.addItem(data);
+
+    let item = this.props.menu.find((key) => key.id === id);
+
+    try {
+      const res = await axios({
+        method: "PUT",
+        url: `http://localhost:5000/menu/${id}/update`,
+        headers: {
+          Authorization: `Bearer ${this.props.auth.token}`,
+        },
+        data,
+      });
+
+      if (res.status === 200) {
+        const menu = [
+          ...this.props.menu.filter((key) => key.id !== id),
+          { ...item, ...data },
+        ];
+        await this.props.storeMenuData(menu);
+        this.props.updateMenu(menu, id);
+
+        this.setState({ showEdit: false });
+
+        // this.closeModal();
+
+        const { status } = res.data;
+        this.setState(
+          {
+            loading: false,
+          },
+          () => {
+            Toast("success", status);
+          }
+        );
+      }
+    } catch (err) {
+      this.setState({
+        loading: false,
+      });
+      if (!err.response) {
+        Toast("error", "Network error!");
+        return;
+      }
+
+      this.props.catchErrors(err.response);
+    }
+  };
+
+  deleteItem = async (id) => {
+    this.setState({
+      loading: true,
+    });
+    try {
+      const res = await axios({
+        method: "DELETE",
+        url: `http://localhost:5000/menu/${id}`,
+        headers: {
+          Authorization: `Bearer ${this.props.auth.token}`,
+        },
+      });
+
+      if (res.status === 200) {
+        const menu = this.props.menu.filter((key) => key.id !== id);
+
+        await this.props.storeMenuData(menu);
+        this.props.updateMenu(menu);
+
+        const { status } = res.data;
+        this.setState(
+          {
+            loading: false,
+            showDelete: false,
+          },
+          () => {
+            Toast("success", status);
+            this.closeModal();
+          }
+        );
+      }
+    } catch (err) {
+      this.setState({
+        loading: false,
+      });
+      if (!err.response) {
+        Toast("error", "Network error!");
+        return;
+      }
+
+      this.props.catchErrors(err.response);
+    }
   };
 
   render() {
@@ -81,7 +220,11 @@ class Modal extends Component {
         >
           <i
             className="material-icons close"
-            onClick={(e) => this.closeModal()}
+            onClick={(e) =>
+              this.state.showEdit && Object.values(item).length
+                ? this.setState({ showEdit: false })
+                : this.closeModal()
+            }
           >
             clear
           </i>
@@ -89,6 +232,8 @@ class Modal extends Component {
             <>
               <div className="modal-content">
                 <h5> {item.name} </h5>
+                {this.state.loading ? loader : ""}
+
                 {Object.keys(item)
                   .filter((i) => i.toLowerCase()[0] !== "i")
                   .map((i) => (
@@ -99,6 +244,26 @@ class Modal extends Component {
                       <p>{item[i]}</p>
                     </div>
                   ))}
+
+                {this.state.showDelete && (
+                  <div className="delete">
+                    <p>Are you sure you want to delete this food item?</p>
+                    <div>
+                      <button
+                        onClick={(e) => this.deleteItem(item.id)}
+                        className="waves-effect btn-flat red"
+                      >
+                        Yes
+                      </button>
+                      <button
+                        onClick={() => this.setState({ showDelete: false })}
+                        className="waves-effect btn-flat"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="modal-footer">
                 <button
@@ -109,7 +274,7 @@ class Modal extends Component {
                 </button>
 
                 <button
-                  onClick={() => this.deleteItem(item.id)}
+                  onClick={() => this.setState({ showDelete: true })}
                   className="waves-effect btn-flat"
                 >
                   Delete
@@ -118,17 +283,8 @@ class Modal extends Component {
             </>
           ) : (
             <>
-              <div className="modal-content">
-                <EditItem item={item} />
-              </div>
-              <div className="modal-footer">
-                <button
-                  onClick={() => this.setState({ showEdit: false })}
-                  className="waves-effect btn-flat"
-                >
-                  Update
-                </button>
-              </div>
+              {this.state.loading ? loader : ""}
+              <EditItem item={item} submit={this.submitPayload} />
             </>
           )}
         </div>
@@ -145,7 +301,9 @@ const map = (state) => {
   };
 };
 
-const actions = {};
+const actions = {
+  storeMenuData,
+};
 
 // export default connect(mapStateToProps, mapAc)(Modal);
 export default connect(map, actions)(Modal);

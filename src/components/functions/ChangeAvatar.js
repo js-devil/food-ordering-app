@@ -3,13 +3,13 @@ import axios from "axios";
 import Toast from "./Toast";
 import avatars from "../../assets/js/avatars.json";
 
-const ChangeAvatar = props => {
+const ChangeAvatar = (props) => {
   const Endpoint = `http://localhost:5000`;
   const { auth, catchErrors, saveLoginData } = props;
 
   const [{ image_url, loading }, changeAvatar] = React.useState({
     image_url: auth.image_url,
-    loading: false
+    loading: false,
   });
 
   const uploadAvatar = async () => {
@@ -17,33 +17,33 @@ const ChangeAvatar = props => {
       Toast("info", "Select an avatar");
       return;
     }
-    changeAvatar(key => ({
+    changeAvatar((key) => ({
       ...key,
-      loading: true
+      loading: true,
     }));
     try {
       const res = await axios({
         method: "POST",
         url: `${Endpoint}/users/change-avatar`,
         headers: {
-          Authorization: `Bearer ${auth.token}`
+          Authorization: `Bearer ${auth.token}`,
         },
-        data: { image_url }
+        data: { image_url },
       });
       await saveLoginData({ ...auth, image_url });
       Toast("success", res.data.status);
-      changeAvatar(key => ({
+      changeAvatar((key) => ({
         ...key,
-        loading: false
+        loading: false,
       }));
     } catch (err) {
-      changeAvatar(key => ({
+      changeAvatar((key) => ({
         ...key,
-        loading: false
+        loading: false,
       }));
-      if(!err.response) {
+      if (!err.response) {
         Toast("error", "Network error!");
-        return
+        return;
       }
 
       catchErrors(err.response);
@@ -71,13 +71,15 @@ const ChangeAvatar = props => {
   return (
     <>
       <div className="row avatar-showcase">
-        {avatars.map(key => (
+        {avatars.map((key) => (
           <div className="col s6 avatar" key={key.id}>
             <img
               src={key.url}
               alt={key.id}
               className={image_url === key.url ? "picked-img" : ""}
-              onClick={e => changeAvatar(i => ({ ...i, image_url: key.url }))}
+              onClick={(e) =>
+                changeAvatar((i) => ({ ...i, image_url: key.url }))
+              }
             />
           </div>
         ))}
@@ -86,7 +88,7 @@ const ChangeAvatar = props => {
       {loading ? loader : ""}
 
       <div className="signin-btn">
-        <button onClick={e => uploadAvatar()} disabled={loading}>
+        <button onClick={(e) => uploadAvatar()} disabled={loading}>
           Change
         </button>
       </div>

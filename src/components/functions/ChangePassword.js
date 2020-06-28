@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import Toast from "./Toast";
 
-const ChangePassword = props => {
+const ChangePassword = (props) => {
   const types = { old_password: "", new_password: "", confirm: "" };
   const Endpoint = `http://localhost:5000`;
   const state = {
@@ -10,73 +10,77 @@ const ChangePassword = props => {
     new_password: "",
     confirm: "",
     loading: false,
-    errors: types
+    errors: types,
   };
 
   const { auth, catchErrors } = props;
 
   const [
     { old_password, new_password, confirm, loading, errors },
-    changeState
+    changeState,
   ] = React.useState(state);
 
   const handleInput = ({ target }) => {
-    changeState(key => ({
+    changeState((key) => ({
       ...key,
       [target.id]: target.value,
       errors: {
         ...errors,
         [target.id]:
-            target.value && target.value.length < 6
+          target.value && target.value.length < 6
             ? "Must have at least 6 characters"
             : target.id === "confirm" && target.value !== new_password
             ? "Passwords do not match"
-            : ""
-      }
+            : "",
+      },
     }));
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if(!old_password.length || !new_password.length || !confirm.length) {
-        Toast("error", "Fill in all fields!")
-        return
-    }
-    else if(new_password !== confirm) {
-        return;
-    }
-    else if(old_password.length>=6 && new_password.length>=6 && new_password === confirm) {
-        changeState(key => ({
-            ...key,
-            loading: true
-        }));
-        changeMyPassword({ old_password, new_password })
+    if (!old_password.length || !new_password.length || !confirm.length) {
+      Toast("error", "Fill in all fields!");
+      return;
+    } else if (new_password !== confirm) {
+      return;
+    } else if (
+      old_password.length >= 6 &&
+      new_password.length >= 6 &&
+      new_password === confirm
+    ) {
+      changeState((key) => ({
+        ...key,
+        loading: true,
+      }));
+      changeMyPassword({ old_password, new_password });
     }
   };
 
-  const changeMyPassword = async data => {
+  const changeMyPassword = async (data) => {
     try {
       const res = await axios({
         method: "POST",
         url: `${Endpoint}/users/change-password`,
         headers: {
-          Authorization: `Bearer ${auth.token}`
+          Authorization: `Bearer ${auth.token}`,
         },
-        data
+        data,
       });
       Toast("success", res.data.status);
-      changeState(key => ({
-        ...key, ...state }))
+      changeState((key) => ({
+        ...key,
+        ...state,
+      }));
       document.getElementById("form").reset();
     } catch (err) {
-      changeState(key => ({
+      changeState((key) => ({
         ...key,
-        loading: false
+        loading: false,
       }));
 
-      if(!err.response) {
+      if (!err.response) {
         Toast("error", "Network error!");
-        return
+        return;
       }
       catchErrors(err.response);
     }
@@ -98,18 +102,18 @@ const ChangePassword = props => {
         </div>
       </div>
     </div>
-  )
+  );
 
   return (
     <div className="change-password">
-      <form className="col s12" id="form" onSubmit={e => handleSubmit(e)}>
+      <form className="col s12" id="form" onSubmit={(e) => handleSubmit(e)}>
         <div className="row">
           <div className="input-field pw-field col s12">
             <input
               id="old_password"
               disabled={loading}
-              style={{ textTransform: "lowercase", fontSize: '30px' }}
-              onChange={e => handleInput(e)}
+              style={{ textTransform: "lowercase", fontSize: "30px" }}
+              onChange={(e) => handleInput(e)}
               type="password"
               autoComplete="off"
               className="validate"
@@ -118,16 +122,16 @@ const ChangePassword = props => {
             <span className="helper-text">{errors.old_password}</span>
           </div>
 
-          { loading ? loader : "" }
+          {loading ? loader : ""}
 
           <div className="input-field pw-field col s12">
             <input
               id="new_password"
               disabled={loading}
-              style={{ textTransform: "lowercase", fontSize: '30px' }}
+              style={{ textTransform: "lowercase", fontSize: "30px" }}
               autoComplete="off"
               type="password"
-              onChange={e => handleInput(e)}
+              onChange={(e) => handleInput(e)}
               className="validate"
             />
             <label htmlFor="new_password">New Password</label>
@@ -137,11 +141,11 @@ const ChangePassword = props => {
           <div className="input-field pw-field col s12">
             <input
               id="confirm"
-              style={{ textTransform: "lowercase", fontSize: '30px' }}
+              style={{ textTransform: "lowercase", fontSize: "30px" }}
               autoComplete="off"
               disabled={loading}
               type="password"
-              onChange={e => handleInput(e)}
+              onChange={(e) => handleInput(e)}
               className="validate"
             />
             <label htmlFor="confirm">Confirm Password</label>

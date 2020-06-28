@@ -56,18 +56,27 @@ class Orders extends Component {
   handleSearch = ({ value }) => {
     this.setState({
       menu: this.props.menu.filter((key) =>
-        key.name.includes(value.toLowerCase())
+        key.name.toLowerCase().includes(value.toLowerCase())
       ),
     });
   };
 
   selectItem = (id) => {
-    const item = this.props.menu.find((key) => key.id === id);
-    console.log(item);
+    const item = this.props.menu.find((key) => key.id === id) || {};
+
     this.setState({
       item,
       showModal: true,
     });
+  };
+
+  updateMenu = (menu, id) => {
+    this.setState(
+      {
+        menu,
+      },
+      () => id && this.selectItem(id)
+    );
   };
 
   closeModal = (val) => {
@@ -77,7 +86,6 @@ class Orders extends Component {
   };
 
   render() {
-    // console.log(this.state.menu);
     const { menu } = this.state;
     const Naira = <span>&#8358;</span>;
 
@@ -85,6 +93,9 @@ class Orders extends Component {
       <div className="no-orders">
         <img src={sadface} alt="no orders" />
         <p>There are no items on the menu yet</p>
+        <button onClick={(e) => this.selectItem(0)} className="btn btn-flat">
+          Add Item
+        </button>
       </div>
     );
 
@@ -96,7 +107,10 @@ class Orders extends Component {
             <th>Price</th>
             <th>Quantity</th>
             <th>
-              <span className="add-item">
+              <span
+                className="add-item flex"
+                onClick={(e) => this.selectItem(0)}
+              >
                 <i className="material-icons">add_circle_outline</i> Add Item
               </span>
             </th>
@@ -149,7 +163,9 @@ class Orders extends Component {
           <EditMenu
             item={this.state.item}
             closeModal={this.closeModal}
+            updateMenu={this.updateMenu}
             visible={this.state.showModal}
+            catchErrors={this.props.catchErrors}
           />
         )}
       </div>

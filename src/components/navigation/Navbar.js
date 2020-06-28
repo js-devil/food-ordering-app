@@ -5,15 +5,20 @@ import "../../assets/css/Navbar.css";
 import logo from "../../assets/img/logo.png";
 // import login from "../../assets/img/login.png";
 
-const Navbar = props => {
+export const categories = [
+  "All",
+  "Rice",
+  "Yam",
+  "Beans",
+  "Swallow",
+  "Others",
+  "Drinks",
+  "Specials",
+];
+
+const Navbar = (props) => {
   const Naira = <span>&#8358;</span>;
-  const {
-    auth,
-    savePath,
-    getCategory,
-    menuModal,
-    getStatus
-  } = props;
+  const { auth, savePath, getCategory, menuModal, getStatus } = props;
   const { username, image_url, balance } = auth;
   const location = props.location.pathname;
   const navMenu = (
@@ -34,8 +39,9 @@ const Navbar = props => {
     Object.keys(auth).length &&
     !auth.username.includes("admin") &&
     !auth.username.includes("canteen")
-      ? navMenu 
-      : location.includes('menu') || location.includes('orders') ? addNew
+      ? navMenu
+      : location.includes("menu") || location.includes("orders")
+      ? addNew
       : "";
 
   const cartNav = (
@@ -44,38 +50,21 @@ const Navbar = props => {
     </span>
   );
 
-  const status_ = locationName.includes('order') ? true : false
+  const status_ = locationName.includes("order") ? true : false;
 
   const caret = <i className="material-icons caret">arrow_drop_down</i>;
-  const categories = [
-    "All",
-    "Rice",
-    "Yam",
-    "Beans",
-    "Swallow",
-    "Others",
-    "Drinks",
-    "Specials"
-  ];
 
   const statuses = ["Pending", "Cancelled", "Completed"];
   const [{ category, status }, setFilter] = React.useState({
     category: "All",
-    status: status_ ? "Pending" : "Status"
+    status: status_ ? "Pending" : "Status",
   });
 
   React.useEffect(() => {
     getCategory(category);
     getStatus(status);
     savePath(location);
-  }, [
-    location,
-    savePath,
-    category,
-    getCategory,
-    status,
-    getStatus,
-  ]);
+  }, [location, savePath, category, getCategory, status, getStatus]);
 
   return (
     <div
@@ -91,8 +80,7 @@ const Navbar = props => {
 
           {location.includes("cart") ? cartNav : authNav}
 
-          {
-            location.includes("dashboard") ? (
+          {location.includes("dashboard") ? (
             menuModal ? (
               <div
                 className="waves-effect waves-light modal-trigger link-text"
@@ -114,13 +102,11 @@ const Navbar = props => {
                 </p>
               </div>
             )
-          ) :
-          (username && (username.includes('admin') || username.includes('canteen')))
-          ?
-           (
+          ) : username &&
+            (username.includes("admin") || username.includes("canteen")) ? (
             <Link
               to="#"
-              style={{float: 'right', paddingRight: '10px'}}
+              style={{ float: "right", paddingRight: "10px" }}
               onClick={() => {
                 props.logoutUser({});
                 props.history.push("/");
@@ -128,19 +114,18 @@ const Navbar = props => {
             >
               <i className="material-icons">power_settings_new</i>
             </Link>
-          ) :
-          (
+          ) : (
             <img src={image_url} className="small-img" alt="user img" />
           )}
 
           <div id="status" className="modal bottom-sheet modal-fixed-footer">
             <div className="modal-content">
               <h5>Status</h5>
-              {statuses.map(key => (
+              {statuses.map((key) => (
                 <div
                   key={key}
                   onClick={() => {
-                    setFilter(i => ({ ...i, status: key }));
+                    setFilter((i) => ({ ...i, status: key }));
                   }}
                 >
                   {" "}
@@ -156,11 +141,11 @@ const Navbar = props => {
           <div id="category" className="modal bottom-sheet modal-fixed-footer">
             <div className="modal-content">
               <h5>Category</h5>
-              {categories.map(key => (
+              {categories.map((key) => (
                 <div
                   key={key}
                   onClick={() => {
-                    setFilter(i => ({ ...i, category: key }));
+                    setFilter((i) => ({ ...i, category: key }));
                   }}
                 >
                   {" "}
@@ -195,7 +180,7 @@ const Navbar = props => {
             {balance}
           </p>
         </li>
-        {links.map(key => (
+        {links.map((key) => (
           <li
             key={key}
             className={

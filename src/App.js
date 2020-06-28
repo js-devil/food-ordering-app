@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { Router, Route, Redirect } from "react-router-dom";
 
 import history from "./history";
 
@@ -35,16 +35,21 @@ import Toast from "./components/functions/Toast";
 
 export const errors = ({ status, data }) => {
   if (status && status === 400) {
-    if (data.error.includes("jwt expired")) {
+    if (data.error && data.error.includes("jwt expired")) {
       Toast("info", "Session expired!");
-      this.props.logout({});
-      this.props.history.push("/");
+      logUserOut();
       return;
     }
-    Toast("error", String(data.error));
+
+    Toast("error", data.error ? String(data.error) : data.failed.toString());
     return;
   }
   Toast("error", "Network error!");
+};
+
+const logUserOut = () => {
+  logout({});
+  history.push("/");
 };
 
 const AuthRoute = ({ component: Component, auth, ...rest }) => (
