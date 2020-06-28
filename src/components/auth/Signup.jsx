@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import { connect } from "react-redux";
 import { saveLoginData } from "../../store/actions/auth";
-import { getOrders } from "../../store/actions/orders"
+import { getOrders } from "../../store/actions/orders";
 import Toast from "../functions/Toast";
 
 import { Link } from "react-router-dom";
@@ -24,30 +24,33 @@ class Signin extends Component {
       loadingText: "Sign Up",
       errors: {
         username: "",
-        password: ""
-      }
+        password: "",
+      },
     };
   }
 
   // methods
   handleInput = ({ target }) => {
     this.setState({
-      [target.id]: target.value
+      [target.id]: target.value,
     });
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     const { username, password, phone } = this.state;
     if (!username.length || !password.length) {
       Toast("error", "Please fill in all the fields!");
-    } else if(username.includes('admin') || username.includes('canteen')) {
-        Toast("error", "This username has been taken!");
-    }
-    else if (username.length > 5 && password.length > 5 && phone.length === 11) {
+    } else if (username.includes("admin") || username.includes("canteen")) {
+      Toast("error", "This username has been taken!");
+    } else if (
+      username.length > 5 &&
+      password.length > 5 &&
+      phone.length === 11
+    ) {
       this.setState({
         loading: true,
-        loadingText: "Registering"
+        loadingText: "Registering",
       });
       this.register(this, { username, password, phone });
     } else {
@@ -61,48 +64,48 @@ class Signin extends Component {
             password.length < 6
               ? "Password must have at least 6 characters"
               : "",
-         phone:
-            phone.length !== 11
-            ? "Phone must have 11 characters" : ""
-        }
+          phone: phone.length !== 11 ? "Phone must have 11 characters" : "",
+        },
       });
     }
   };
 
   async register(self, data) {
     try {
-      const res = await axios.post("http://localhost:5000/users/register", data);
+      const res = await axios.post(
+        "http://localhost:5000/users/register",
+        data
+      );
       await self.props.saveLoginData(res.data);
-      await self.props.getOrders(res.data.token, this, data.username)
-      Toast("success", 'Registration Successful')
+      await self.props.getOrders(res.data.token, data.username);
+      Toast("success", "Registration Successful");
       await self.props.history.push("/dashboard");
     } catch (err) {
       self.setState({
         loading: false,
-        loadingText: "Sign Up"
+        loadingText: "Sign Up",
       });
 
-      if(!err.response) {
+      if (!err.response) {
         Toast("error", "Network error!");
-        return
+        return;
       }
 
-      if(err.response.status===400) {
-        Toast("error", String(err.response.data.error))
-        return
+      if (err.response.status === 400) {
+        Toast("error", String(err.response.data.error));
+        return;
       }
-      Toast("error", "An error occured!")
+      Toast("error", "An error occured!");
     }
   }
 
   render() {
     return (
       <div className="signin-page">
-
         <div className="home">
-            <Link to="/">
+          <Link to="/">
             <i className="material-icons">person</i>
-            </Link>
+          </Link>
         </div>
 
         <div className="logo-container">
@@ -119,7 +122,7 @@ class Signin extends Component {
                   disabled={this.state.loading}
                   onChange={this.handleInput}
                   type="text"
-                  style={{textTransform: 'lowercase'}}
+                  style={{ textTransform: "lowercase" }}
                   className="validate"
                 />
                 <label htmlFor="username">Username</label>
@@ -140,9 +143,7 @@ class Signin extends Component {
                   className="validate"
                 />
                 <label htmlFor="username">Phone Number</label>
-                <span className="helper-text">
-                  {this.state.errors.phone}
-                </span>
+                <span className="helper-text">{this.state.errors.phone}</span>
               </div>
 
               <div className="input-field col s12">
@@ -168,7 +169,11 @@ class Signin extends Component {
                   )}
                 </span>
                 <label htmlFor="password">Password</label>
-                <span className={`helper-text ${this.state.errors.password ? "pass-bg" : ""}`}>
+                <span
+                  className={`helper-text ${
+                    this.state.errors.password ? "pass-bg" : ""
+                  }`}
+                >
                   {this.state.errors.password}
                 </span>
               </div>
@@ -186,16 +191,17 @@ class Signin extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   // return state
   const { auth } = state;
   return {
-    auth
+    auth,
   };
 };
 
 const mapActionsToProps = {
-  saveLoginData, getOrders
+  saveLoginData,
+  getOrders,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Signin);

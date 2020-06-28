@@ -18,7 +18,7 @@ class Cart extends Component {
       orders: [],
       total: 0,
       foodChoices: [],
-      error: false
+      error: false,
     };
   }
 
@@ -27,25 +27,25 @@ class Cart extends Component {
     const total = this.props.choices.reduce((key, i) => key + i.price, 0);
 
     this.setState({
-      orders: this.props.choices.map(key => {
+      orders: this.props.choices.map((key) => {
         const { id, name, category } = key;
         return { id, name, category, cost: key.price, user_quantity: 1 };
       }),
       foodChoices: this.props.choices,
-      total
+      total,
     });
   }
 
-  checkErrors = error => {
+  checkErrors = (error) => {
     this.setState({
-      error
+      error,
     });
   };
 
-  getOrder = order => {
+  getOrder = (order) => {
     let orders = this.state.orders;
     // find order
-    let orderIndex = orders.findIndex(x => x.id === order.id);
+    let orderIndex = orders.findIndex((x) => x.id === order.id);
 
     // if order obj is found
     if (orderIndex >= 0) {
@@ -54,13 +54,13 @@ class Cart extends Component {
       const total = orders.reduce((key, i) => key + i.cost, 0);
       this.setState({
         orders,
-        total
+        total,
       });
     }
   };
 
   removeFoodItem = (id) => {
-    console.log(id)
+    console.log(id);
     // if (this.state.foodChoices.length) {
     //   this.setState(
     //     {
@@ -71,25 +71,25 @@ class Cart extends Component {
     //     }
     //   );
     // }
-  }
+  };
 
   cancelOrder = async () => {
     this.props.history.goBack();
     this.props.foodPicked([]);
     this.setState({
       orders: [],
-      total: 0
+      total: 0,
     });
   };
 
   sendOrder = () => {
     if (!this.state.error) {
       this.setState({
-        loading: true
+        loading: true,
       });
       this.postOrder(this, {
         order: this.state.orders,
-        total: this.state.total
+        total: this.state.total,
       });
     }
   };
@@ -100,25 +100,28 @@ class Cart extends Component {
         method: "POST",
         url: `${Endpoint}/order`,
         headers: {
-          Authorization: `Bearer ${self.props.auth.token}`
+          Authorization: `Bearer ${self.props.auth.token}`,
         },
-        data
+        data,
       });
       Toast("success", res.data.status);
-      await self.props.getOrders(self.props.auth.token, this, self.props.auth.username);
+      await self.props.getOrders(
+        self.props.auth.token,
+        self.props.auth.username
+      );
 
       self.props.history.push("/dashboard");
     } catch (err) {
       self.setState({
-        loading: false
+        loading: false,
       });
-      
-      if(!err.response) {
+
+      if (!err.response) {
         Toast("error", "Network error!");
-        return
+        return;
       }
 
-      this.props.catchErrors(err.response)
+      this.props.catchErrors(err.response);
     }
   }
 
@@ -140,7 +143,7 @@ class Cart extends Component {
           </div>
         </div>
       </div>
-    )
+    );
 
     return (
       <div className="cart-page">
@@ -155,12 +158,15 @@ class Cart extends Component {
             </thead>
 
             <tbody>
-              {this.state.foodChoices.map(key => {
+              {this.state.foodChoices.map((key) => {
                 return (
                   <Choice
                     key={key.id}
                     food={key}
-                    no={this.state.foodChoices.findIndex(x => x.id === key.id) + 1}
+                    no={
+                      this.state.foodChoices.findIndex((x) => x.id === key.id) +
+                      1
+                    }
                     order={this.getOrder}
                     hasError={this.checkErrors}
                     removeItem={this.removeFoodItem}
@@ -199,24 +205,24 @@ class Cart extends Component {
           </button>
         </div>
 
-        { this.state.loading ? loader : "" }
+        {this.state.loading ? loader : ""}
       </div>
     );
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   // return state
   const { choices, auth } = state;
   return {
     choices,
-    auth
+    auth,
   };
 };
 
 const mapActionsToProps = {
   foodPicked,
-  getOrders
+  getOrders,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Cart);

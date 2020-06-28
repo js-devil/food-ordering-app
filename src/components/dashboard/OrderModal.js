@@ -13,9 +13,9 @@ const options = {
   inDuration: 250,
   outDuration: 250,
   opacity: 0.5,
-  dismissible: true,
+  dismissible: false,
   startingTop: "4%",
-  endingTop: "10%"
+  endingTop: "10%",
 };
 
 // instance.close();
@@ -27,7 +27,7 @@ class Modal extends Component {
 
     this.state = {
       loading: false,
-      showCancel: true
+      showCancel: true,
     };
   }
 
@@ -51,12 +51,13 @@ class Modal extends Component {
     M.Modal.init(this.Modal, options);
     let instance = M.Modal.getInstance(this.Modal);
     instance.close();
+    this.props.closeModal(false);
   };
 
-  reOrder = async id => {
+  reOrder = async (id) => {
     let { balance, token, username } = this.props.auth;
     this.setState({
-      loading: true
+      loading: true,
     });
 
     try {
@@ -64,19 +65,19 @@ class Modal extends Component {
         method: "POST",
         url: `http://localhost:5000/order/${id}/reorder`,
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        data: { balance }
+        data: { balance },
       });
       let { status } = res.data;
       balance = res.data.balance;
       await this.props.saveLoginData({ ...this.props.auth, balance });
       // await this.props.sendOrder({});
       this.closeModal();
-      await this.props.getOrders(token, this, username);
+      await this.props.getOrders(token, username);
       this.setState(
         {
-          loading: false
+          loading: false,
         },
         () => {
           Toast("success", status);
@@ -84,7 +85,7 @@ class Modal extends Component {
       );
     } catch (err) {
       this.setState({
-        loading: false
+        loading: false,
       });
 
       if (!err.response) {
@@ -95,24 +96,27 @@ class Modal extends Component {
     }
   };
 
-  cancelOrder = async id => {
+  cancelOrder = async (id) => {
     this.setState({
-      loading: true
+      loading: true,
     });
     try {
       const res = await axios({
         method: "POST",
         url: `http://localhost:5000/order/${id}/cancel`,
         headers: {
-          Authorization: `Bearer ${this.props.auth.token}`
+          Authorization: `Bearer ${this.props.auth.token}`,
         },
-        data: {}
+        data: {},
       });
 
       if (res.status === 200) {
-        let order = this.props.orders.find(key => key.id === id);
+        let order = this.props.orders.find((key) => key.id === id);
         order.completed = 0;
-        let orders = [...this.props.orders.filter(key => key.id !== id), order];
+        let orders = [
+          ...this.props.orders.filter((key) => key.id !== id),
+          order,
+        ];
         await this.props.updateOrders(orders);
         await this.props.updateStateOrders(orders);
         await this.props.sendOrder(order);
@@ -120,7 +124,7 @@ class Modal extends Component {
         await this.props.saveLoginData({ ...this.props.auth, balance });
         this.setState(
           {
-            loading: false
+            loading: false,
           },
           () => {
             Toast("success", status);
@@ -129,7 +133,7 @@ class Modal extends Component {
       }
     } catch (err) {
       this.setState({
-        loading: false
+        loading: false,
       });
       if (!err.response) {
         Toast("error", "Network error!");
@@ -140,24 +144,27 @@ class Modal extends Component {
     }
   };
 
-  completeOrder = async id => {
+  completeOrder = async (id) => {
     this.setState({
-      loading: true
+      loading: true,
     });
     try {
       const res = await axios({
         method: "POST",
         url: `http://localhost:5000/order/${id}/answer`,
         headers: {
-          Authorization: `Bearer ${this.props.auth.token}`
+          Authorization: `Bearer ${this.props.auth.token}`,
         },
-        data: {}
+        data: {},
       });
 
       if (res.status === 200) {
-        let order = this.props.orders.find(key => key.id === id);
+        let order = this.props.orders.find((key) => key.id === id);
         order.completed = 1;
-        let orders = [...this.props.orders.filter(key => key.id !== id), order];
+        let orders = [
+          ...this.props.orders.filter((key) => key.id !== id),
+          order,
+        ];
         await this.props.updateOrders(orders);
         await this.props.updateStateOrders(orders);
         this.closeModal();
@@ -165,7 +172,7 @@ class Modal extends Component {
         const { status } = res.data;
         this.setState(
           {
-            loading: false
+            loading: false,
           },
           () => {
             Toast("success", status);
@@ -174,7 +181,7 @@ class Modal extends Component {
       }
     } catch (err) {
       this.setState({
-        loading: false
+        loading: false,
       });
       if (!err.response) {
         Toast("error", "Network error!");
@@ -191,7 +198,7 @@ class Modal extends Component {
       user_order,
       total,
       completed,
-      time_of_order
+      time_of_order,
     } = this.props.order;
 
     const { username } = this.props.auth;
@@ -238,15 +245,21 @@ class Modal extends Component {
     return (
       <>
         <div
-          ref={Modal => {
+          ref={(Modal) => {
             this.Modal = Modal;
           }}
           id="modal1"
           className={this.state.loading ? "modal blur  " : "modal"}
         >
+          <i
+            className="material-icons close"
+            onClick={(e) => this.closeModal()}
+          >
+            clear
+          </i>
           <div className="modal-content">
             <h5> Food Order </h5>
-            {JSON.parse(user_order).map(key => (
+            {JSON.parse(user_order).map((key) => (
               <div className="flex no-border" key={key.id}>
                 <p>{key.name}</p>
                 <p>{key.cost}</p>
@@ -301,18 +314,18 @@ class Modal extends Component {
   }
 }
 
-const map = state => {
+const map = (state) => {
   const { orders, auth } = state;
   return {
     auth,
-    orders
+    orders,
   };
 };
 
 const actions = {
   updateOrders,
   saveLoginData,
-  getOrders
+  getOrders,
 };
 
 // export default connect(mapStateToProps, mapAc)(Modal);

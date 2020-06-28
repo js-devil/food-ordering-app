@@ -20,23 +20,19 @@ class Home extends Component {
       menu: [],
       orders: [],
       order: {},
-      foodChoices: []
+      foodChoices: [],
     };
   }
 
   componentDidMount() {
     this.setState({
-      menu: this.props.menu.filter(key => key.quantity !== 0),
-      orders: this.props.orders
+      menu: this.props.menu.filter((key) => key.quantity !== 0),
+      orders: this.props.orders,
     });
 
     if (Object.values(this.props.auth).length && this.props.auth.token) {
       setInterval(() => {
-        this.props.getOrders(
-          this.props.auth.token,
-          this,
-          this.props.auth.username
-        );
+        this.props.getOrders(this.props.auth.token, this.props.auth.username);
       }, 60000);
     }
   }
@@ -53,13 +49,13 @@ class Home extends Component {
           menu:
             this.props.category !== "All"
               ? this.props.menu
-                  .filter(key => key.quantity !== 0)
-                  .filter(key =>
+                  .filter((key) => key.quantity !== 0)
+                  .filter((key) =>
                     key.category
                       .toLowerCase()
                       .includes(this.props.category.toLowerCase())
                   )
-              : this.props.menu.filter(key => key.quantity !== 0)
+              : this.props.menu.filter((key) => key.quantity !== 0),
           // foodChoices: []
         },
         () => {
@@ -87,24 +83,26 @@ class Home extends Component {
       this.setState({
         orders:
           this.props.status !== "Status"
-            ? this.props.orders.filter(key => key.completed === status)
-            : this.props.orders
+            ? this.props.orders.filter((key) => key.completed === status)
+            : this.props.orders,
       });
     }
   }
 
-  updateOrders = orders => {
+  updateOrders = (orders) => {
     this.setState({
-      orders
+      orders,
     });
   };
 
-  pickFoodItem = item => {
-    let findItem = this.state.foodChoices.filter(key => key.id === item.id);
+  pickFoodItem = (item) => {
+    let findItem = this.state.foodChoices.filter((key) => key.id === item.id);
     if (findItem.length) {
       this.setState(
         {
-          foodChoices: this.state.foodChoices.filter(key => key.id !== item.id)
+          foodChoices: this.state.foodChoices.filter(
+            (key) => key.id !== item.id
+          ),
         },
         () => {
           this.props.foodPicked(this.state.foodChoices);
@@ -113,7 +111,7 @@ class Home extends Component {
     } else {
       this.setState(
         {
-          foodChoices: [...this.state.foodChoices, item]
+          foodChoices: [...this.state.foodChoices, item],
         },
         () => {
           this.props.foodPicked(this.state.foodChoices);
@@ -122,16 +120,16 @@ class Home extends Component {
     }
   };
 
-  getOrder = order => {
+  getOrder = (order) => {
     this.setState({
       order,
-      showModal: Object.keys(order).length ? true : false
+      showModal: Object.keys(order).length ? true : false,
     });
   };
 
   render() {
     const MenuList = this.state.menu.length ? (
-      this.state.menu.map(key => (
+      this.state.menu.map((key) => (
         <FoodItem pickFood={this.pickFoodItem} key={key.id} food={key} />
       ))
     ) : (
@@ -156,7 +154,7 @@ class Home extends Component {
           </tr>
         </thead>
         <tbody>
-          {this.state.orders.map(key => (
+          {this.state.orders.map((key) => (
             <Order
               catchErrors={this.props.catchErrors}
               sendOrder={this.getOrder}
@@ -231,20 +229,20 @@ class Home extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { menu, orders, auth, menuLoading, choices } = state;
   return {
     orders,
     menu,
     auth,
     menuLoading,
-    choices
+    choices,
   };
 };
 
 const mapActionsToProps = {
   foodPicked,
-  getOrders
+  getOrders,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Home);

@@ -23,19 +23,19 @@ class Signin extends Component {
       loadingText: "Login",
       errors: {
         username: "",
-        password: ""
-      }
+        password: "",
+      },
     };
   }
 
   // methods
   handleInput = ({ target }) => {
     this.setState({
-      [target.id]: target.value
+      [target.id]: target.value,
     });
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     const { username, password } = this.state;
     if (!username.length || !password.length) {
@@ -43,7 +43,7 @@ class Signin extends Component {
     } else if (username.length > 5 && password.length > 5) {
       this.setState({
         loading: true,
-        loadingText: "Logging in"
+        loadingText: "Logging in",
       });
       this.login(this, { username, password });
     } else {
@@ -56,8 +56,8 @@ class Signin extends Component {
           password:
             password.length < 6
               ? "Password must have at least 6 characters"
-              : ""
-        }
+              : "",
+        },
       });
     }
   };
@@ -66,7 +66,8 @@ class Signin extends Component {
     try {
       const res = await axios.post("http://localhost:5000/users/login", data);
       await self.props.saveLoginData(res.data);
-      await self.props.getOrders(res.data.token, this, data.username);
+      localStorage.setItem("user", JSON.stringify(res.data));
+      await self.props.getOrders(res.data.token, data.username);
       Toast("success", "Login Successful");
       if (
         data.username.includes("admin") ||
@@ -79,12 +80,12 @@ class Signin extends Component {
     } catch (err) {
       self.setState({
         loading: false,
-        loadingText: "Login"
+        loadingText: "Login",
       });
 
-      if(!err.response) {
+      if (!err.response) {
         Toast("error", "Network error!");
-        return
+        return;
       }
 
       if (err.response && err.response.status === 400) {
@@ -169,17 +170,17 @@ class Signin extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   // return state
   const { auth } = state;
   return {
-    auth
+    auth,
   };
 };
 
 const mapActionsToProps = {
   saveLoginData,
-  getOrders
+  getOrders,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Signin);

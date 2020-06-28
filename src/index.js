@@ -5,6 +5,10 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import store from "./store";
 import { Provider } from "react-redux";
+import { saveLoginData } from "./store/actions/auth";
+
+const user = JSON.parse(localStorage.getItem("user"));
+if (user) store.dispatch(saveLoginData(user));
 
 ReactDOM.render(
   <Provider store={store}>

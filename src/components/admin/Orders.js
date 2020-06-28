@@ -15,13 +15,13 @@ class Orders extends Component {
     this.state = {
       showModal: false,
       order: {},
-      orders: []
+      orders: [],
     };
   }
 
   componentDidMount() {
     this.setState({
-      orders: this.props.orders.filter(key => key.completed === null)
+      orders: this.props.orders.filter((key) => key.completed === null),
     });
   }
 
@@ -39,33 +39,33 @@ class Orders extends Component {
       this.setState({
         orders:
           this.props.status !== "Status"
-            ? this.props.orders.filter(key => key.completed === status)
-            : this.props.orders
+            ? this.props.orders.filter((key) => key.completed === status)
+            : this.props.orders,
       });
     }
   }
 
-  updateOrders = orders => {
+  updateOrders = (orders) => {
     const status = this.props.status.toLowerCase().includes("pending")
       ? null
       : this.props.status.toLowerCase().includes("completed")
       ? 1
       : 0;
     this.setState({
-      orders: orders.filter(key => key.completed === status)
+      orders: orders.filter((key) => key.completed === status),
     });
   };
 
-  getOrder = order => {
+  getOrder = (order) => {
     if (order.completed === null) {
       this.setState({
         order,
-        showModal: Object.keys(order).length ? true : false
+        showModal: Object.keys(order).length ? true : false,
       });
       return;
     }
     this.setState({
-      showModal: false
+      showModal: false,
     });
   };
 
@@ -78,11 +78,17 @@ class Orders extends Component {
     let filter = target.value.toLowerCase();
     this.setState({
       orders: this.props.orders.filter(
-        key =>
+        (key) =>
           key.completed === status &&
           (key.username.toLowerCase().includes(filter) ||
             key.user_order.toLowerCase().includes(filter))
-      )
+      ),
+    });
+  };
+
+  closeModal = (val) => {
+    this.setState({
+      showModal: false,
     });
   };
 
@@ -100,13 +106,13 @@ class Orders extends Component {
           <input
             type="text"
             placeholder="Search..."
-            onInput={e => this.handleInput(e)}
+            onInput={(e) => this.handleInput(e)}
           />
         </div>
 
         <div className="body">
           {this.state.orders.length
-            ? this.state.orders.map(key => (
+            ? this.state.orders.map((key) => (
                 <Order key={key.id} order={key} sendOrder={this.getOrder} />
               ))
             : noOrders}
@@ -117,6 +123,7 @@ class Orders extends Component {
             visible={this.state.showModal}
             order={this.state.order}
             updateStateOrders={this.updateOrders}
+            closeModal={this.closeModal}
             sendOrder={this.getOrder}
             catchErrors={this.props.catchErrors}
           />
@@ -128,16 +135,16 @@ class Orders extends Component {
   }
 }
 
-const map = state => {
+const map = (state) => {
   const { auth, orders } = state;
   return {
     auth,
-    orders
+    orders,
   };
 };
 
 const actions = {
-  getOrders
+  getOrders,
 };
 
 export default connect(map, actions)(Orders);
