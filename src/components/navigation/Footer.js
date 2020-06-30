@@ -1,9 +1,17 @@
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
 
-const Footer = ({ menuModal, choices, location, changeRange, auth, filter }) => {
+const Footer = ({
+  menuModal,
+  choices,
+  location,
+  changeRange,
+  auth,
+  filter,
+  used,
+}) => {
   const { pathname } = location;
-  const { category, status } = filter
+  const { category, status } = filter;
   // hooks
   const [{ range }, setRange] = React.useState({ range: "Today" });
   React.useEffect(() => {
@@ -33,11 +41,11 @@ const Footer = ({ menuModal, choices, location, changeRange, auth, filter }) => 
     <div id="range" className="modal bottom-sheet modal-fixed-footer">
       <div className="modal-content">
         <h5>Date Range</h5>
-        {ranges.map(key => (
+        {ranges.map((key) => (
           <div
             key={key}
             onClick={() => {
-              setRange(i => ({ range: key }));
+              setRange((i) => ({ range: key }));
             }}
           >
             <p className="modal-close">{key}</p>
@@ -66,25 +74,36 @@ const Footer = ({ menuModal, choices, location, changeRange, auth, filter }) => 
       {homeBtn}
       {dateRange}
 
-      {
-        pathname.includes("menu") ? (
-          <div
-            className="waves-effect waves-light modal-trigger filter-text"
-            href="#category"
-          >
-            <p>{category} {caret}</p>
-          </div>
-        ) : pathname.includes("orders") ? (
-          <div
-            className="waves-effect waves-light modal-trigger filter-text"
-            href="#status"
-          >
-            <p>{status} {caret}</p>
-          </div>
-        ) :
-        pathname.includes("settings")
-        ? "" :
-        choices.length || menuModal ? (
+      {pathname.includes("menu") ? (
+        <div
+          className="waves-effect waves-light modal-trigger filter-text"
+          href="#category"
+        >
+          <p>
+            {category} {caret}
+          </p>
+        </div>
+      ) : pathname.includes("orders") ? (
+        <div
+          className="waves-effect waves-light modal-trigger filter-text"
+          href="#status"
+        >
+          <p>
+            {status} {caret}
+          </p>
+        </div>
+      ) : pathname.includes("tokens") ? (
+        <div
+          className="waves-effect waves-light modal-trigger filter-text"
+          href="#tokenStatus"
+        >
+          <p>
+            {used ? "Used" : "Ununsed"} {caret}
+          </p>
+        </div>
+      ) : pathname.includes("settings") ? (
+        ""
+      ) : choices.length || menuModal ? (
         <Link to="/cart" className="cart">
           {choices.length ? (
             <span className="picked_no">{choices.length}</span>
@@ -93,7 +112,7 @@ const Footer = ({ menuModal, choices, location, changeRange, auth, filter }) => 
           )}
           <i className="material-icons">shopping_cart</i>
         </Link>
-        ) : (
+      ) : (
         <div
           className="waves-effect waves-light modal-trigger range-text"
           href="#range"

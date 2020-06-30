@@ -7,7 +7,7 @@ import EditMenu from "./EditMenu";
 import "../../assets/css/Admin.css";
 import sadface from "../../assets/img/sad-face.png";
 
-class Orders extends Component {
+class Menu extends Component {
   constructor(props) {
     super(props);
 
@@ -90,12 +90,30 @@ class Orders extends Component {
     const Naira = <span>&#8358;</span>;
 
     const noMenu = (
-      <div className="no-orders">
-        <img src={sadface} alt="no orders" />
+      <div className="no-menu">
+        <img src={sadface} alt="no menu" />
         <p>There are no items on the menu yet</p>
         <button onClick={(e) => this.selectItem(0)} className="btn btn-flat">
           Add Item
         </button>
+      </div>
+    );
+
+    const loader = (
+      <div className="loader">
+        <div className="preloader-wrapper active">
+          <div className="spinner-layer spinner-blue-only">
+            <div className="circle-clipper left">
+              <div className="circle"></div>
+            </div>
+            <div className="gap-patch">
+              <div className="circle"></div>
+            </div>
+            <div className="circle-clipper right">
+              <div className="circle"></div>
+            </div>
+          </div>
+        </div>
       </div>
     );
 
@@ -151,13 +169,11 @@ class Orders extends Component {
           />
         </div>
 
-        {this.state.loading ? (
-          <div>Loading...</div>
-        ) : this.state.menu.length ? (
-          menuList
-        ) : (
-          noMenu
-        )}
+        {this.state.loading
+          ? loader
+          : this.state.menu.length
+          ? menuList
+          : noMenu}
 
         {this.state.showModal && (
           <EditMenu
@@ -185,4 +201,4 @@ const actions = {
   getMenu,
 };
 
-export default connect(map, actions)(Orders);
+export default connect(map, actions)(Menu);

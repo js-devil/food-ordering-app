@@ -16,13 +16,17 @@ class Orders extends Component {
       showModal: false,
       order: {},
       orders: [],
+      loading: true,
     };
   }
 
   componentDidMount() {
-    this.setState({
-      orders: this.props.orders.filter((key) => key.completed === null),
-    });
+    this.setState(
+      {
+        orders: this.props.orders.filter((key) => key.completed === null),
+      },
+      () => this.setState({ loading: false })
+    );
   }
 
   componentDidUpdate(prevProps) {
@@ -99,6 +103,12 @@ class Orders extends Component {
         <p>No one has made any orders so far</p>
       </div>
     );
+
+    const ordersView = this.state.orders.length
+      ? this.state.orders.map((key) => (
+          <Order key={key.id} order={key} sendOrder={this.getOrder} />
+        ))
+      : noOrders;
     return (
       <div className="orders">
         <div className="head">
@@ -111,11 +121,9 @@ class Orders extends Component {
         </div>
 
         <div className="body">
-          {this.state.orders.length
-            ? this.state.orders.map((key) => (
-                <Order key={key.id} order={key} sendOrder={this.getOrder} />
-              ))
-            : noOrders}
+          {this.state.loading || !this.state.orders.length
+            ? "Loading..."
+            : ordersView}
         </div>
 
         {this.state.showModal ? (

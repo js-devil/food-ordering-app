@@ -26,6 +26,7 @@ import Settings from "./components/dashboard/Settings.js";
 import Admin from "./components/admin/Home";
 import Orders from "./components/admin/Orders";
 import Menu from "./components/admin/Menu";
+import Tokens from "./components/admin/Tokens";
 
 import None from "./components/pages/None";
 
@@ -86,6 +87,7 @@ class App extends Component {
     this.state = {
       category: "",
       status: "",
+      used: false,
       range: "",
       menuModal: true,
     };
@@ -156,6 +158,12 @@ class App extends Component {
     });
   };
 
+  getUsed = (used) => {
+    this.setState({
+      used,
+    });
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -169,6 +177,8 @@ class App extends Component {
             savePath={this.props.storePath}
             getCategory={this.getCategory}
             getStatus={this.getStatus}
+            used={this.state.used}
+            getUsed={this.getUsed}
           />
 
           {/* pages */}
@@ -212,6 +222,14 @@ class App extends Component {
             component={Menu}
           />
 
+          <AdminRoute
+            auth={this.props.auth}
+            catchErrors={errors}
+            path="/tokens"
+            used={this.state.used}
+            component={Tokens}
+          />
+
           <div className="app">
             {/* <Route path="/menu" component={Menu} /> */}
             <AuthRoute
@@ -245,6 +263,7 @@ class App extends Component {
               category: this.state.category,
               status: this.state.status,
             }}
+            used={this.state.used}
           />
         </Router>
       </React.Fragment>

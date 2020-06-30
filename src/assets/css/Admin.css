@@ -3,7 +3,8 @@ body {
   background: #f5f5f5;
 }
 .orders,
-.menu {
+.menu,
+.tokens {
   background: #f5f5f5;
   padding: 15px;
   border-bottom-left-radius: 10px;
@@ -13,7 +14,8 @@ body {
 }
 
 .orders .head,
-.menu .head {
+.menu .head,
+.tokens .head {
   display: flex;
   justify-content: space-between;
   margin: 0px 5px;
@@ -28,7 +30,8 @@ body {
 }
 
 .orders .head input,
-.menu .head input {
+.menu .head input,
+.tokens .head input {
   border: 0;
   border-radius: 15px;
   padding: 0 15px;
@@ -38,7 +41,8 @@ body {
 }
 
 .orders .head input:focus,
-.menu .head input:focus {
+.menu .head input:focus,
+.tokens .head input:focus {
   box-shadow: none !important;
   border: none !important;
   outline: none !important;
@@ -49,31 +53,37 @@ body {
 }
 
 .orders .body,
-.menu .body {
+.menu .body,
+.tokens .body {
   overflow-y: scroll;
   max-height: 78vh;
 }
 
 .orders .no-orders,
-.menu .no-menu {
+.menu .no-menu,
+.tokens .no-tokens {
   margin-top: 10%;
 }
 
 .no-orders img,
-.no-menu img {
+.no-menu img,
+.no-tokens img {
   height: 200px;
 }
 
 .no-orders p,
-.no-menu p {
+.no-menu p,
+.no-tokens p {
   font-size: 20px;
 }
 
-.no-orders {
+.no-orders,
+.no-tokens {
   text-align: center;
 }
 
-.no-orders button {
+.no-orders button,
+.no-tokens button {
   background: rgb(68, 60, 133);
   color: #f5f5f5;
 }
@@ -199,4 +209,50 @@ button.colored {
 }
 p.range-field {
   margin: 0 !important;
+}
+
+.token-add {
+  height: 30px;
+}
+
+.add-token {
+  margin: 10%;
+}
+
+.add-token input {
+  font-size: 24px !important;
+}
+
+.add-token input::placeholder {
+  font-size: 16px;
+}
+
+.add-token .flex {
+  border: 0;
+}
+
+.add-token .flex span {
+  padding-bottom: 10px;
+  color: rgb(68, 60, 133);
+  border-bottom: 2px solid rgb(68, 60, 133);
+  width: 50px;
+  text-align: center;
+  font-size: 24px;
+}
+
+.add-token .flex button {
+  border: 0;
+  padding: 15px;
+  margin: 5px;
+  color: #fff;
+  background-color: rgb(68, 60, 133);
+}
+
+.add-token .btn-block {
+  color: #fff;
+  background-color: rgb(68, 60, 133);
+  text-align: center;
+  width: 100%;
+  /* border-top: 2px solid #000000b0;
+  padding-top: 10px; */
 }

@@ -43,7 +43,7 @@ export default ({ item, submit }) => {
   };
 
   const EditForm = (
-    <form className="col s12 form">
+    <form className="col s12 form" onSubmit={(e) => handleSubmit(e)}>
       <div className="row">
         {Object.keys({
           name: item.name,

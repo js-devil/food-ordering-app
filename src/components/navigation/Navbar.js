@@ -18,7 +18,15 @@ export const categories = [
 
 const Navbar = (props) => {
   const Naira = <span>&#8358;</span>;
-  const { auth, savePath, getCategory, menuModal, getStatus } = props;
+  const {
+    auth,
+    savePath,
+    getCategory,
+    menuModal,
+    getStatus,
+    used,
+    getUsed,
+  } = props;
   const { username, image_url, balance } = auth;
   const location = props.location.pathname;
   const navMenu = (
@@ -29,7 +37,7 @@ const Navbar = (props) => {
 
   const locationName = location.replace("/", "");
   const links = ["Home", "Recharge", "Settings"];
-  const addNew = (
+  const goBacktoAdmin = (
     <span onClick={() => props.history.goBack()}>
       <i className="material-icons">chevron_left</i>
     </span>
@@ -40,8 +48,10 @@ const Navbar = (props) => {
     !auth.username.includes("admin") &&
     !auth.username.includes("canteen")
       ? navMenu
-      : location.includes("menu") || location.includes("orders")
-      ? addNew
+      : location.includes("menu") ||
+        location.includes("orders") ||
+        location.includes("tokens")
+      ? goBacktoAdmin
       : "";
 
   const cartNav = (
@@ -55,16 +65,27 @@ const Navbar = (props) => {
   const caret = <i className="material-icons caret">arrow_drop_down</i>;
 
   const statuses = ["Pending", "Cancelled", "Completed"];
-  const [{ category, status }, setFilter] = React.useState({
+  const [{ category, status, usedToken }, setFilter] = React.useState({
     category: "All",
     status: status_ ? "Pending" : "Status",
+    usedToken: used,
   });
 
   React.useEffect(() => {
     getCategory(category);
     getStatus(status);
     savePath(location);
-  }, [location, savePath, category, getCategory, status, getStatus]);
+    getUsed(usedToken);
+  }, [
+    location,
+    savePath,
+    category,
+    getCategory,
+    status,
+    getStatus,
+    usedToken,
+    getUsed,
+  ]);
 
   return (
     <div
@@ -128,8 +149,32 @@ const Navbar = (props) => {
                     setFilter((i) => ({ ...i, status: key }));
                   }}
                 >
-                  {" "}
-                  <p className="modal-close">{key}</p>{" "}
+                  <p className="modal-close">{key}</p>
+                </div>
+              ))}
+            </div>
+            <div className="modal-footer">
+              <p className="modal-close btn-flat">Cancel</p>
+            </div>
+          </div>
+
+          <div
+            id="tokenStatus"
+            className="modal bottom-sheet modal-fixed-footer"
+          >
+            <div className="modal-content">
+              <h5>Status</h5>
+              {["Used", "Unused"].map((key) => (
+                <div
+                  onClick={() => {
+                    setFilter((i) => ({
+                      ...i,
+                      usedToken: key === "Used" ? true : false,
+                    }));
+                  }}
+                  key={key}
+                >
+                  <p className="modal-close">{key}</p>
                 </div>
               ))}
             </div>
@@ -148,8 +193,7 @@ const Navbar = (props) => {
                     setFilter((i) => ({ ...i, category: key }));
                   }}
                 >
-                  {" "}
-                  <p className="modal-close">{key}</p>{" "}
+                  <p className="modal-close">{key}</p>
                 </div>
               ))}
             </div>
