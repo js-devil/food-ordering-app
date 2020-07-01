@@ -7,7 +7,7 @@ import { getOrders } from "../../store/actions/orders";
 
 import Choice from "../functions/FoodChoice";
 import Toast from "../functions/Toast";
-const Endpoint = `http://localhost:5000`;
+const Endpoint = `https://food-ordering-system-nan.herokuapp.com`;
 
 class Cart extends Component {
   constructor(props) {

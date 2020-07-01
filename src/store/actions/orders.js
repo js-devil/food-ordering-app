@@ -27,7 +27,7 @@ export const getOrders = (token, name) => {
     try {
       const res = await axios({
         method: "GET",
-        url: `http://localhost:5000/orders${url}`,
+        url: `https://food-ordering-system-nan.herokuapp.com/orders${url}`,
         headers: {
           Authorization: `Bearer ${token}`,
         },

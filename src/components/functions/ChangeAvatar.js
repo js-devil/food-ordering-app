@@ -4,7 +4,7 @@ import Toast from "./Toast";
 import avatars from "../../assets/js/avatars.json";
 
 const ChangeAvatar = (props) => {
-  const Endpoint = `http://localhost:5000`;
+  const Endpoint = `https://food-ordering-system-nan.herokuapp.com`;
   const { auth, catchErrors, saveLoginData } = props;
 
   const [{ image_url, loading }, changeAvatar] = React.useState({

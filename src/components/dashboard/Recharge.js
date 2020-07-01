@@ -3,7 +3,7 @@ import axios from "axios";
 import Toast from "../functions/Toast";
 import { connect } from "react-redux";
 import { saveLoginData } from "../../store/actions/auth";
-const Endpoint = `http://localhost:5000`;
+const Endpoint = `https://food-ordering-system-nan.herokuapp.com`;
 
 class Recharge extends Component {
   constructor(props) {

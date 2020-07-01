@@ -4,7 +4,7 @@ import Toast from "./Toast";
 
 const ChangePassword = (props) => {
   const types = { old_password: "", new_password: "", confirm: "" };
-  const Endpoint = `http://localhost:5000`;
+  const Endpoint = `https://food-ordering-system-nan.herokuapp.com`;
   const state = {
     old_password: "",
     new_password: "",

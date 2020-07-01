@@ -12,7 +12,9 @@ export const storeMenuData = (data) => {
 export const getMenu = (self) => {
   return async (dispatch) => {
     try {
-      const res = await axios.get(`http://localhost:5000/menu`);
+      const res = await axios.get(
+        `https://food-ordering-system-nan.herokuapp.com/menu`
+      );
       const menu = res.data.menu.length ? res.data.menu : [];
       dispatch(storeMenuData(menu));
 

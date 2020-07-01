@@ -63,7 +63,7 @@ class Modal extends Component {
     try {
       const res = await axios({
         method: "POST",
-        url: `http://localhost:5000/order/${id}/reorder`,
+        url: `https://food-ordering-system-nan.herokuapp.com/order/${id}/reorder`,
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -103,7 +103,7 @@ class Modal extends Component {
     try {
       const res = await axios({
         method: "POST",
-        url: `http://localhost:5000/order/${id}/cancel`,
+        url: `https://food-ordering-system-nan.herokuapp.com/order/${id}/cancel`,
         headers: {
           Authorization: `Bearer ${this.props.auth.token}`,
         },
@@ -151,7 +151,7 @@ class Modal extends Component {
     try {
       const res = await axios({
         method: "POST",
-        url: `http://localhost:5000/order/${id}/answer`,
+        url: `https://food-ordering-system-nan.herokuapp.com/order/${id}/answer`,
         headers: {
           Authorization: `Bearer ${this.props.auth.token}`,
         },

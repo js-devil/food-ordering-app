@@ -52,7 +52,7 @@ class Token extends Component {
     try {
       const res = await axios({
         method: "GET",
-        url: `http://localhost:5000/tokens`,
+        url: `https://food-ordering-system-nan.herokuapp.com/tokens`,
         headers: {
           Authorization: `Bearer ${this.props.auth.token}`,
         },
@@ -92,7 +92,7 @@ class Token extends Component {
     try {
       const res = await axios({
         method: "POST",
-        url: `http://localhost:5000/tokens/generate`,
+        url: `https://food-ordering-system-nan.herokuapp.com/tokens/generate`,
         headers: {
           Authorization: `Bearer ${this.props.auth.token}`,
         },
