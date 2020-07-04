@@ -1,7 +1,6 @@
 import React from "react";
 import getImage from "./image-gen";
-import jollof from "../../assets/img/jollof.png";
-const images = require.context("../../assets/food", true);
+// const images = require.context("../../assets/food", true);
 
 const List = ({ food, pickFood, choices }) => {
   const Naira = <span style={{ fontSize: "18px" }}>&#8358;{food.price}</span>;
@@ -19,9 +18,7 @@ const List = ({ food, pickFood, choices }) => {
     picked: choices.includes(food.id) ? true : false,
   });
 
-  const imageName = getImage(food.name);
-
-  let img = images("./" + imageName);
+  const img = getImage(food.name);
 
   return (
     <div
