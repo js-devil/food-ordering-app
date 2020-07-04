@@ -90,7 +90,11 @@ const Navbar = (props) => {
   return (
     <div
       style={
-        location.includes("sign") || location === "/" ? { display: "none" } : {}
+        location.includes("sign") ||
+        location === "/" ||
+        location.includes("none")
+          ? { display: "none" }
+          : {}
       }
     >
       <nav className={location.includes("dashboard") ? "no-shadow" : ""}>

@@ -86,27 +86,21 @@ class App extends Component {
 
     this.state = {
       category: "",
-      status: "",
+      status: "pending",
       used: false,
       range: "",
       menuModal: true,
     };
   }
   async componentDidMount() {
-    if (
-      !/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)
-    ) {
-      // some code..
-      // const history = useHistory();
-      // history.push("/none");
-      // this.props.history.push("/none");
-      console.log(this);
-    }
+    if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent))
+      return history.push("/none");
 
     await this.props.getMenu();
     if (
       window.location.pathname !== "/" &&
-      window.location.pathname !== "/signup"
+      window.location.pathname !== "/signup" &&
+      window.location.pathname !== "/none"
     )
       await this.props.getOrders(
         this.props.auth.token,
@@ -119,12 +113,18 @@ class App extends Component {
       setInterval(async () => {
         if (
           window.location.pathname !== "/" &&
-          window.location.pathname !== "/signup"
-        )
-          await this.props.getOrders(
-            this.props.auth.token,
-            this.props.auth.username
-          );
+          window.location.pathname !== "/signup" &&
+          window.location.pathname !== "/none"
+        ) {
+          const name = this.props.auth.username;
+          if (!name.includes("admin") && !name.includes("canteen"))
+            await this.props.getMenu();
+          if (name.includes("admin") || name.includes("canteen"))
+            await this.props.getOrders(
+              this.props.auth.token,
+              this.props.auth.username
+            );
+        }
       }, 5000);
     }
   }

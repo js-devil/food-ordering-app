@@ -83,7 +83,7 @@ ul:not(.browser-default) > li:last-of-type {
 }
 
 .profile img {
-  height: 200px;
+  height: 150px;
   border: 2px solid rgb(68, 60, 133);
   border-radius: 50%;
   margin: 0;

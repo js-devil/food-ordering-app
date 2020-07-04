@@ -66,7 +66,8 @@ const Footer = ({
         pathname.includes("cart") ||
         pathname.includes("recharge") ||
         pathname.includes("admin") ||
-        pathname === "/"
+        pathname === "/" ||
+        pathname.includes("none")
           ? { display: "none" }
           : {}
       }

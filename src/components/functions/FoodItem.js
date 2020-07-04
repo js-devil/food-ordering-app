@@ -14,7 +14,7 @@ const FoodItem = ({ food, pickFood, choices }) => {
   );
   const pickedRef = React.useRef();
   const [{ picked }, setPicked] = React.useState({
-    picked: false
+    picked: false,
   });
   // React.useEffect(() => {
   //   let obj = choices.find(key => key.id === food.id);
@@ -32,7 +32,7 @@ const FoodItem = ({ food, pickFood, choices }) => {
       onClick={() => {
         if (!food.status.includes("Un")) {
           pickFood(food);
-          setPicked(key => ({ picked: !key.picked }));
+          setPicked((key) => ({ picked: !key.picked }));
           pickedRef.current.style.opacity = picked ? 1 : 0.6;
         } else {
           Toast("info", "This food item is unavailable");

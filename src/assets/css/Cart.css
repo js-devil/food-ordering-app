@@ -1,10 +1,10 @@
 .cart-container {
-  padding: 15px;
+  padding: 15px 5px;
 }
 
 .cart-head th,
 .cart-foot td {
-  font-size: 26px;
+  font-size: 18px;
   font-weight: 600;
 }
 
@@ -13,13 +13,8 @@
 }
 
 .foodName td {
-  font-size: 20px;
-  padding: 20px 0px;
-}
-
-.food-cost {
-  text-align: center;
   font-size: 18px;
+  padding: 20px 0px;
 }
 
 .cart-footer {
@@ -62,6 +57,7 @@
 .decrement {
   position: absolute;
   font-size: 24px;
+  z-index: 9;
 }
 
 .increment {
@@ -103,4 +99,16 @@
 input[type="number"]:not(.browser-default):focus:not([readonly]) {
   border-bottom: 2px solid rgb(68, 60, 133);
   box-shadow: none;
+}
+
+.selected_quantity,
+.food-cost {
+  font-size: 14px;
+  position: relative;
+  left: -7px;
+}
+
+.food-cost {
+  text-align: center;
+  font-size: 18px;
 }

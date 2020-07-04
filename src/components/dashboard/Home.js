@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { foodPicked } from "../../store/actions/choices";
 import { getOrders } from "../../store/actions/orders";
+import { getMenu } from "../../store/actions/menu";
 
 import FoodItem from "../functions/FoodList";
 import Order from "../functions/Order";
@@ -17,30 +18,36 @@ class Home extends Component {
     this.state = {
       showMenu: true,
       showModal: false,
+      loading: true,
       menu: [],
       orders: [],
       order: {},
-      foodChoices: [],
+      foodChoices: this.props.choices,
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    if (!this.props.orders.length)
+      await this.props.getOrders(
+        this.props.auth.token,
+        this.props.auth.username
+      );
+    this.updateOrders(this.props.orders);
+
+    if (!this.props.menu.length) return await this.props.getMenu(this);
+
     this.setState({
       menu: this.props.menu.filter((key) => key.quantity !== 0),
       orders: this.props.orders,
+      loading: false,
     });
-
-    if (Object.values(this.props.auth).length && this.props.auth.token) {
-      setInterval(() => {
-        this.props.getOrders(this.props.auth.token, this.props.auth.username);
-      }, 60000);
-    }
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.orders.length !== prevProps.orders.length) {
       this.updateOrders(this.props.orders);
     }
+
     if (
       this.props.category.toLowerCase() !== prevProps.category.toLowerCase()
     ) {
@@ -127,10 +134,21 @@ class Home extends Component {
     });
   };
 
+  closeModal = (val) => {
+    this.setState({
+      showModal: false,
+    });
+  };
+
   render() {
     const MenuList = this.state.menu.length ? (
       this.state.menu.map((key) => (
-        <FoodItem pickFood={this.pickFoodItem} key={key.id} food={key} />
+        <FoodItem
+          pickFood={this.pickFoodItem}
+          key={key.id}
+          food={key}
+          choices={this.props.choices.map((key) => key.id)}
+        />
       ))
     ) : (
       <div className="none">
@@ -154,14 +172,21 @@ class Home extends Component {
           </tr>
         </thead>
         <tbody>
-          {this.state.orders.map((key) => (
-            <Order
-              catchErrors={this.props.catchErrors}
-              sendOrder={this.getOrder}
-              order={key}
-              key={key.id}
-            />
-          ))}
+          {this.state.orders
+            .sort((a, b) =>
+              new Date(b.time_of_order).getTime() >
+              new Date(a.time_of_order).getTime()
+                ? 1
+                : -1
+            )
+            .map((key) => (
+              <Order
+                catchErrors={this.props.catchErrors}
+                sendOrder={this.getOrder}
+                order={key}
+                key={key.id}
+              />
+            ))}
         </tbody>
       </table>
     ) : (
@@ -173,6 +198,31 @@ class Home extends Component {
         )}
       </div>
     );
+
+    const HomeView = this.state.showMenu ? (
+      MenuList
+    ) : (
+      <div style={{ padding: "15px" }}>{OrderList}</div>
+    );
+
+    const loader = (
+      <div className="loader">
+        <div className="preloader-wrapper active">
+          <div className="spinner-layer spinner-blue-only">
+            <div className="circle-clipper left">
+              <div className="circle"></div>
+            </div>
+            <div className="gap-patch">
+              <div className="circle"></div>
+            </div>
+            <div className="circle-clipper right">
+              <div className="circle"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+
     return (
       <div className="dashboard">
         <div className="dashboard-header">
@@ -214,15 +264,12 @@ class Home extends Component {
               updateStateOrders={this.updateOrders}
               sendOrder={this.getOrder}
               catchErrors={this.props.catchErrors}
+              closeModal={this.closeModal}
             />
           ) : (
             ""
           )}
-          {this.state.showMenu ? (
-            MenuList
-          ) : (
-            <div style={{ padding: "15px" }}>{OrderList}</div>
-          )}
+          {this.state.loading ? loader : HomeView}
         </div>
       </div>
     );
@@ -242,6 +289,7 @@ const mapStateToProps = (state) => {
 
 const mapActionsToProps = {
   foodPicked,
+  getMenu,
   getOrders,
 };
 

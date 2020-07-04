@@ -76,10 +76,13 @@ class Cart extends Component {
   cancelOrder = async () => {
     this.props.history.goBack();
     this.props.foodPicked([]);
-    this.setState({
-      orders: [],
-      total: 0,
-    });
+    this.setState(
+      {
+        orders: [],
+        total: 0,
+      },
+      () => Toast("error", "Cancelled")
+    );
   };
 
   sendOrder = () => {
@@ -109,6 +112,12 @@ class Cart extends Component {
         self.props.auth.token,
         self.props.auth.username
       );
+
+      self.props.foodPicked([]);
+      self.setState({
+        orders: [],
+        total: 0,
+      });
 
       self.props.history.push("/dashboard");
     } catch (err) {
@@ -153,6 +162,7 @@ class Cart extends Component {
               <tr className="cart-head">
                 <th style={{ textAlign: "center" }}>#</th>
                 <th>Food</th>
+                <th>Qty</th>
                 <th>Cost</th>
               </tr>
             </thead>
@@ -182,7 +192,7 @@ class Cart extends Component {
               </tr>
 
               <tr>
-                <td colSpan="3">
+                <td colSpan="4">
                   {!this.state.loading ? (
                     <button
                       onClick={() => this.cancelOrder()}

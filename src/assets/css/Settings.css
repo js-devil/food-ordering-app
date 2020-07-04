@@ -1,3 +1,7 @@
+.settings-page {
+  margin-top: -5px;
+}
+
 .pw-field input {
   font-size: 26px;
 }
@@ -80,8 +84,12 @@
   transition: height 0.3s linear;
 }
 
+.avatar-showcase {
+  margin-bottom: 0;
+}
+
 .avatar img {
-  height: 150px;
+  height: 120px;
   border: 2px solid rgb(68, 60, 133);
   border-radius: 50%;
   padding: 10px;

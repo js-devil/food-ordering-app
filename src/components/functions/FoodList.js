@@ -1,8 +1,10 @@
 import React from "react";
+import getImage from "./image-gen";
 import jollof from "../../assets/img/jollof.png";
+const images = require.context("../../assets/food", true);
 
-const List = ({ food, pickFood }) => {
-  const Naira = <span style={{ fontSize: "20px" }}>&#8358;{food.price}</span>;
+const List = ({ food, pickFood, choices }) => {
+  const Naira = <span style={{ fontSize: "18px" }}>&#8358;{food.price}</span>;
 
   const check = (
     <span className="checked">
@@ -14,8 +16,12 @@ const List = ({ food, pickFood }) => {
 
   const pickedRef = React.useRef();
   const [{ picked }, setPicked] = React.useState({
-    picked: false
+    picked: choices.includes(food.id) ? true : false,
   });
+
+  const imageName = getImage(food.name);
+
+  let img = images("./" + imageName);
 
   return (
     <div
@@ -24,19 +30,20 @@ const List = ({ food, pickFood }) => {
       onClick={() => {
         if (!food.status.includes("Un")) {
           pickFood(food);
-          setPicked(key => ({ picked: !key.picked }));
-          pickedRef.current.style.opacity = picked ? 1 : 0.6;
+          setPicked((key) => ({ picked: !key.picked }));
+          // pickedRef.current.style.opacity = picked ? 1 : 0.6;
         }
       }}
+      style={{ opacity: choices.includes(food.id) ? 0.6 : 1 }}
     >
       <div className="card-panel food-card">
         <div className="food-price">
-          {Naira} { picked ? check : "" }
+          {Naira} {picked ? check : ""}
         </div>
         {/* <img src={process.env.PUBLIC_URL + "/food/fried-rice.jpg"} /> */}
-        <img src={jollof} alt="food" />
+        <img src={img} alt="food" />
         <p>
-          <span> {food.quantity}x </span> {food.name}
+          <span>{food.quantity}x </span> {food.name}
         </p>
         <span className="white-text">{/* {food} */}</span>
       </div>

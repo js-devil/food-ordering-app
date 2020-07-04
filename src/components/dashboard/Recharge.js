@@ -99,7 +99,7 @@ class Recharge extends Component {
           id="token"
           disabled={this.state.loading}
           onChange={this.handleInput}
-          type="number"
+          type="text"
           maxLength={16}
           autoFocus={true}
           className="validate"

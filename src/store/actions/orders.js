@@ -34,15 +34,23 @@ export const getOrders = (token, name) => {
       });
 
       let orders = res.data.orders.length ? res.data.orders : [];
-      orders = orders.map((key) => {
-        return {
-          ...key,
-          time_of_order: String(new Date(key.time_of_order)).slice(4, 15),
-          choices: JSON.parse(key.user_order)
-            .map((key) => [key.name])
-            .join(", "),
-        };
-      });
+      orders = orders
+        .map((key) => {
+          return {
+            ...key,
+            // date: key.time_of_order,
+            // time_of_order: String(new Date(key.time_of_order)).slice(4, 15),
+            choices: JSON.parse(key.user_order)
+              .map((key) => [key.name])
+              .join(", "),
+          };
+        })
+        .sort((a, b) =>
+          new Date(b.time_of_order).getTime() >
+          new Date(a.time_of_order).getTime()
+            ? 1
+            : -1
+        );
 
       dispatch(storeOrders(orders));
     } catch (err) {
