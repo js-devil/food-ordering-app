@@ -52,7 +52,11 @@ class Signin extends Component {
         loading: true,
         loadingText: "Registering",
       });
-      this.register(this, { username, password, phone });
+      this.register(this, {
+        username: username.toLowerCase(),
+        password: password.toLowerCase(),
+        phone,
+      });
     } else {
       this.setState({
         errors: {

@@ -45,7 +45,10 @@ class Signin extends Component {
         loading: true,
         loadingText: "Logging in",
       });
-      this.login(this, { username, password });
+      this.login(this, {
+        username: username.toLowerCase(),
+        password: password.toLowerCase(),
+      });
     } else {
       this.setState({
         errors: {
