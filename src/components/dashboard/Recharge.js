@@ -37,8 +37,8 @@ class Recharge extends Component {
     this.setState({
       loading: true,
     });
-    // this.rechargeAccount(this, { token });
-    console.log(token);
+    this.rechargeAccount(this, { token });
+    // console.log(token);
   };
 
   async rechargeAccount(self, data) {

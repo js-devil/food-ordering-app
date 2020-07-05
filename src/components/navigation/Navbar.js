@@ -140,7 +140,14 @@ const Navbar = (props) => {
               <i className="material-icons">power_settings_new</i>
             </Link>
           ) : (
-            <img src={image_url} className="small-img" alt="user img" />
+            <img
+              src={
+                image_url ||
+                "https://www.bootdey.com/img/Content/avatar/avatar7.png"
+              }
+              className="small-img"
+              alt="user img"
+            />
           )}
 
           <div id="status" className="modal bottom-sheet modal-fixed-footer">
