@@ -93,7 +93,7 @@ class App extends Component {
     };
   }
   async componentDidMount() {
-    if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent))
+    if (!/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent))
       return history.push("/none");
 
     await this.props.getMenu();

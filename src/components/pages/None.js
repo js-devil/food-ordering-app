@@ -4,9 +4,7 @@ import history from "../../history";
 
 class None extends React.Component {
   componentDidMount() {
-    if (
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)
-    ) {
+    if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
       history.push("/");
     }
   }
@@ -14,8 +12,8 @@ class None extends React.Component {
   render() {
     return (
       <div id="notfound">
-        <div class="notfound">
-          <div class="notfound-404">
+        <div className="notfound">
+          <div className="notfound-404">
             <h3>Oops! This device is not supported</h3>
             <h1>
               <span>4</span>
