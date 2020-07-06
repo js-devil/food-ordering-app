@@ -18,25 +18,23 @@ class Recharge extends Component {
 
   handleInput = ({ target }) => {
     this.setState({
-      error: [target.id].length !== 16 ? "Token must have 16 numbers" : "",
-      [target.id]: target.value.slice(0, -1),
+      // error: [target.id].length !== 16 ? "Token must have 16 numbers" : "",
+      [target.id]: target.value,
     });
   };
 
   validateToken = () => {
-    if (this.state.token.length !== 16 || isNaN(this.state.token)) {
-      this.setState({
+    if (this.state.token.length !== 16 || isNaN(this.state.token))
+      return this.setState({
         error: "Token must have 16 numbers",
       });
-      return;
-    }
+
     this.setState({
       error: "",
-    });
-    const { token } = this.state;
-    this.setState({
       loading: true,
     });
+
+    const { token } = this.state;
     this.rechargeAccount(this, { token });
     // console.log(token);
   };
