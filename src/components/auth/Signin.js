@@ -8,7 +8,7 @@ import Toast from "../functions/Toast";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-import { validatePassword, validateName, validatePhone } from "./validation";
+import { validatePassword, validateName } from "./validation";
 
 import "../../assets/css/Signin.css";
 import logo from "../../assets/img/full_logo.png";
