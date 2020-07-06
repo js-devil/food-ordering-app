@@ -228,7 +228,7 @@ class Home extends Component {
         <div className="dashboard-header">
           <div className="dashboard-content">
             <div>
-              <h5>Hi, {this.props.auth.username.split(" ")[0]}</h5>
+              <h5>Hi, {this.props.auth.username}</h5>
               <p>What do we eat today?</p>
             </div>
             <div>

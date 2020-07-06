@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { validatePassword, validateName, validatePhone } from "./validation";
 
 import { connect } from "react-redux";
 import { saveLoginData } from "../../store/actions/auth";
@@ -39,39 +40,41 @@ class Signin extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const { username, password, phone } = this.state;
-    if (!username.length || !password.length) {
-      Toast("error", "Please fill in all the fields!");
-    } else if (username.includes("admin") || username.includes("canteen")) {
-      Toast("error", "This username has been taken!");
-    } else if (
-      username.length > 5 &&
-      password.length > 5 &&
-      phone.length === 11
-    ) {
-      this.setState({
-        loading: true,
-        loadingText: "Registering",
-      });
-      this.register(this, {
-        username: username.toLowerCase(),
-        password: password.toLowerCase(),
-        phone,
-      });
-    } else {
-      this.setState({
+    if (!username.length || !password.length)
+      return Toast("error", "Please fill in all the fields!");
+
+    if (username.includes("admin") || username.includes("canteen"))
+      return Toast("error", "This username has been taken!");
+
+    if (
+      !validateName(username) ||
+      !validatePassword(password) ||
+      !validatePhone(phone)
+    )
+      return this.setState({
         errors: {
-          username:
-            username.length < 6
-              ? "Username must have at least 6 characters"
-              : "",
-          password:
-            password.length < 6
-              ? "Password must have at least 6 characters"
-              : "",
-          phone: phone.length !== 11 ? "Phone must have 11 characters" : "",
+          username: !validateName(username)
+            ? "Username must be a single name with at least 4 letters"
+            : "",
+          password: !validatePassword(password)
+            ? "Password must be alphanumeric with at least 6 characters"
+            : "",
+          phone: !validatePhone(phone)
+            ? "Phone number must have 11 numbers"
+            : "",
         },
       });
-    }
+
+    this.setState({
+      loading: true,
+      loadingText: "Registering",
+    });
+
+    this.register(this, {
+      username: username.toLowerCase(),
+      password: password.toLowerCase(),
+      phone,
+    });
   };
 
   async register(self, data) {

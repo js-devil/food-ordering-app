@@ -8,6 +8,8 @@ import Toast from "../functions/Toast";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
+import { validatePassword, validateName, validatePhone } from "./validation";
+
 import "../../assets/css/Signin.css";
 import logo from "../../assets/img/full_logo.png";
 
@@ -38,31 +40,30 @@ class Signin extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const { username, password } = this.state;
-    if (!username.length || !password.length) {
-      Toast("error", "Please fill in all the fields!");
-    } else if (username.length > 5 && password.length > 5) {
-      this.setState({
-        loading: true,
-        loadingText: "Logging in",
-      });
-      this.login(this, {
-        username: username.toLowerCase(),
-        password: password.toLowerCase(),
-      });
-    } else {
-      this.setState({
+    if (!username.length || !password.length)
+      return Toast("error", "Please fill in all the fields!");
+
+    if (!validateName(username) || !validatePassword(password))
+      return this.setState({
         errors: {
-          username:
-            username.length < 6
-              ? "Username must have at least 6 characters"
-              : "",
-          password:
-            password.length < 6
-              ? "Password must have at least 6 characters"
-              : "",
+          username: !validateName(username)
+            ? "Username must be a single name with at least 4 letters"
+            : "",
+          password: !validatePassword(password)
+            ? "Password must be alphanumeric with at least 6 characters"
+            : "",
         },
       });
-    }
+
+    this.setState({
+      loading: true,
+      loadingText: "Logging in",
+    });
+
+    this.login(this, {
+      username: username.toLowerCase(),
+      password: password.toLowerCase(),
+    });
   };
 
   async login(self, data) {
