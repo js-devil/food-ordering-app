@@ -230,7 +230,17 @@ class App extends Component {
             component={Tokens}
           />
 
-          <div className="app">
+          <div
+            className="app"
+            style={{
+              display:
+                window.location.pathname !== "/" ||
+                window.location.pathname !== "/signup" ||
+                window.location.pathname !== "/none"
+                  ? "none"
+                  : "",
+            }}
+          >
             {/* <Route path="/menu" component={Menu} /> */}
             <AuthRoute
               path="/cart"

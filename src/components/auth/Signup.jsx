@@ -114,7 +114,7 @@ class Signin extends Component {
 
   render() {
     return (
-      <div className="signin-page">
+      <div className="signin-page signup">
         <div className="home">
           <Link to="/">
             <i className="material-icons">person</i>
