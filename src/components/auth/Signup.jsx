@@ -26,6 +26,7 @@ class Signin extends Component {
       errors: {
         username: "",
         password: "",
+        phone: "",
       },
     };
   }
@@ -68,6 +69,11 @@ class Signin extends Component {
     this.setState({
       loading: true,
       loadingText: "Registering",
+      errors: {
+        username: "",
+        password: "",
+        phone: "",
+      },
     });
 
     this.register(this, {

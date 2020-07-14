@@ -58,6 +58,10 @@ class Signin extends Component {
     this.setState({
       loading: true,
       loadingText: "Logging in",
+      errors: {
+        username: "",
+        password: "",
+      },
     });
 
     this.login(this, {
